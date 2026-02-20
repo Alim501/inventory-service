@@ -6,9 +6,162 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
+  moduleFormat    = "cjs"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  username  String   @unique @db.VarChar(100)
+  email     String?  @unique @db.VarChar(255)
+  password  String?  @db.VarChar(255)
+  googleId     String?  @unique @map("google_id") @db.VarChar(255)
+  telegramId   String?  @unique @map("telegram_id") @db.VarChar(255)
+  isAdmin   Boolean  @default(false) @map("is_admin")
+  isBlocked Boolean  @default(false) @map("is_blocked")  
+  preferredLanguage String @default("en") @map("preferred_language") @db.VarChar(10)
+  preferredTheme    String @default("light") @map("preferred_theme") @db.VarChar(10)
+  resetPasswordToken    String?   @unique @map("reset_password_token") @db.VarChar(255)
+  resetPasswordExpires  DateTime? @map("reset_password_expires")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  inventories       Inventory[]
+  items             Item[]
+  comments          Comment[]
+  likes             Like[]
+  inventoryAccess   InventoryAccess[]
+  
+  @@map("users")
+}
+
+model Inventory {
+  id             String   @id @default(uuid()) @db.Uuid
+  creatorId      String?  @map("creator_id") @db.Uuid
+  title          String?  @db.VarChar(255)
+  description    String?  @db.Text
+  category       String?  @db.VarChar(50)
+  imageUrl       String?  @map("image_url") @db.Text
+  isPublic       Boolean  @default(false) @map("is_public")
+  customIdFormat Json?    @map("custom_id_format") @db.JsonB
+  version        Int      @default(0)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  creator         User?            @relation(fields: [creatorId], references: [id])
+  fields          InventoryField[]
+  items           Item[]
+  comments        Comment[]
+  tags            InventoryTag[]
+  accessUsers     InventoryAccess[]
+
+  @@map("inventories")
+}
+
+model InventoryField {
+  id          String   @id @default(uuid()) @db.Uuid
+  inventoryId String   @map("inventory_id") @db.Uuid
+  fieldName   String   @map("field_name") @db.VarChar(100)
+  fieldType   String   @map("field_type") @db.VarChar(20)
+  fieldOrder  Int      @map("field_order")
+  description String?  @db.Text
+  showInTable Boolean  @default(true) @map("show_in_table")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  inventory  Inventory        @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  fieldValues ItemFieldValue[]
+
+  @@map("inventory_fields")
+}
+
+model Item {
+  id          String   @id @default(uuid()) @db.Uuid
+  inventoryId String   @map("inventory_id") @db.Uuid
+  customId    String?  @map("custom_id") @db.VarChar(255)
+  creatorId   String?  @map("creator_id") @db.Uuid
+  version     Int      @default(0)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  inventory   Inventory        @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  creator     User?            @relation(fields: [creatorId], references: [id])
+  fieldValues ItemFieldValue[]
+  likes       Like[]
+  @@unique([inventoryId, customId])
+  @@map("items")
+}
+
+model ItemFieldValue {
+  id           String   @id @default(uuid()) @db.Uuid
+  itemId       String   @map("item_id") @db.Uuid
+  fieldId      String   @map("field_id") @db.Uuid
+  textValue    String?  @map("text_value") @db.Text
+  numericValue Decimal? @map("numeric_value")
+  booleanValue Boolean? @map("boolean_value")
+
+  item  Item           @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  field InventoryField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, fieldId])
+  @@map("item_field_values")
+}
+
+model InventoryAccess {
+  inventoryId String @map("inventory_id") @db.Uuid
+  userId      String @map("user_id") @db.Uuid
+  
+  inventory Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@id([inventoryId, userId])
+  @@map("inventory_access")
+}
+
+model Comment {
+  id          String   @id @default(uuid()) @db.Uuid
+  inventoryId String   @map("inventory_id") @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  content     String   @db.Text 
+  createdAt   DateTime @default(now()) @map("created_at")
+  
+  inventory Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id])
+  
+  @@map("comments")
+}
+
+model Like {
+  itemId    String   @map("item_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@id([itemId, userId])
+  @@map("likes")
+}
+
+model Tag {
+  id   String @id @default(uuid()) @db.Uuid
+  name String @unique @db.VarChar(50)
+  
+  inventories InventoryTag[]
+  
+  @@map("tags")
+}
+
+model InventoryTag {
+  inventoryId String @map("inventory_id") @db.Uuid
+  tagId       String @map("tag_id") @db.Uuid
+  
+  inventory Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  tag       Tag       @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  @@id([inventoryId, tagId])
+  @@map("inventory_tags")
 }
