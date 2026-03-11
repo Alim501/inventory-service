@@ -1,34 +1,38 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { LikesService } from './likes.service';
 import { CreateLikeDto } from './dto/create-like.dto';
-import { UpdateLikeDto } from './dto/update-like.dto';
+import { AuthGuard } from '@/auth/guards/auth.guard';
+import { AdminGuard } from '@/auth/guards/admin.guard';
+import { CurrentUser } from '@/auth/decorators/user.decorator';
+import type { User } from '@/generated/prisma/client';
 
 @Controller('likes')
 export class LikesController {
   constructor(private readonly likesService: LikesService) {}
 
+  @UseGuards(AuthGuard)
   @Post()
-  create(@Body() createLikeDto: CreateLikeDto) {
-    return this.likesService.create(createLikeDto);
+  create(@Body() dto: CreateLikeDto, @CurrentUser() user: User) {
+    return this.likesService.create(dto.itemId, user);
   }
 
+  @UseGuards(AuthGuard, AdminGuard)
   @Get()
   findAll() {
     return this.likesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.likesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLikeDto: UpdateLikeDto) {
-    return this.likesService.update(+id, updateLikeDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.likesService.remove(+id);
+  @UseGuards(AuthGuard)
+  @Delete(':itemId')
+  remove(@Param('itemId') itemId: string, @CurrentUser() user: User) {
+    return this.likesService.remove(itemId, user);
   }
 }

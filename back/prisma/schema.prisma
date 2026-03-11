@@ -14,6 +14,14 @@ datasource db {
   provider = "postgresql"
 }
 
+enum FieldType {
+  text_single
+  text_multi
+  number
+  boolean
+  image
+}
+
 model User {
   id        String   @id @default(uuid()) @db.Uuid
   username  String   @unique @db.VarChar(100)
@@ -66,7 +74,7 @@ model InventoryField {
   id          String   @id @default(uuid()) @db.Uuid
   inventoryId String   @map("inventory_id") @db.Uuid
   fieldName   String   @map("field_name") @db.VarChar(100)
-  fieldType   String   @map("field_type") @db.VarChar(20)
+  fieldType   FieldType   @map("field_type")
   fieldOrder  Int      @map("field_order")
   description String?  @db.Text
   showInTable Boolean  @default(true) @map("show_in_table")

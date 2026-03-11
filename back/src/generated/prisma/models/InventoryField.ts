@@ -38,7 +38,7 @@ export type InventoryFieldMinAggregateOutputType = {
   id: string | null
   inventoryId: string | null
   fieldName: string | null
-  fieldType: string | null
+  fieldType: $Enums.FieldType | null
   fieldOrder: number | null
   description: string | null
   showInTable: boolean | null
@@ -49,7 +49,7 @@ export type InventoryFieldMaxAggregateOutputType = {
   id: string | null
   inventoryId: string | null
   fieldName: string | null
-  fieldType: string | null
+  fieldType: $Enums.FieldType | null
   fieldOrder: number | null
   description: string | null
   showInTable: boolean | null
@@ -201,7 +201,7 @@ export type InventoryFieldGroupByOutputType = {
   id: string
   inventoryId: string
   fieldName: string
-  fieldType: string
+  fieldType: $Enums.FieldType
   fieldOrder: number
   description: string | null
   showInTable: boolean
@@ -235,7 +235,7 @@ export type InventoryFieldWhereInput = {
   id?: Prisma.UuidFilter<"InventoryField"> | string
   inventoryId?: Prisma.UuidFilter<"InventoryField"> | string
   fieldName?: Prisma.StringFilter<"InventoryField"> | string
-  fieldType?: Prisma.StringFilter<"InventoryField"> | string
+  fieldType?: Prisma.EnumFieldTypeFilter<"InventoryField"> | $Enums.FieldType
   fieldOrder?: Prisma.IntFilter<"InventoryField"> | number
   description?: Prisma.StringNullableFilter<"InventoryField"> | string | null
   showInTable?: Prisma.BoolFilter<"InventoryField"> | boolean
@@ -264,7 +264,7 @@ export type InventoryFieldWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.InventoryFieldWhereInput | Prisma.InventoryFieldWhereInput[]
   inventoryId?: Prisma.UuidFilter<"InventoryField"> | string
   fieldName?: Prisma.StringFilter<"InventoryField"> | string
-  fieldType?: Prisma.StringFilter<"InventoryField"> | string
+  fieldType?: Prisma.EnumFieldTypeFilter<"InventoryField"> | $Enums.FieldType
   fieldOrder?: Prisma.IntFilter<"InventoryField"> | number
   description?: Prisma.StringNullableFilter<"InventoryField"> | string | null
   showInTable?: Prisma.BoolFilter<"InventoryField"> | boolean
@@ -296,7 +296,7 @@ export type InventoryFieldScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"InventoryField"> | string
   inventoryId?: Prisma.UuidWithAggregatesFilter<"InventoryField"> | string
   fieldName?: Prisma.StringWithAggregatesFilter<"InventoryField"> | string
-  fieldType?: Prisma.StringWithAggregatesFilter<"InventoryField"> | string
+  fieldType?: Prisma.EnumFieldTypeWithAggregatesFilter<"InventoryField"> | $Enums.FieldType
   fieldOrder?: Prisma.IntWithAggregatesFilter<"InventoryField"> | number
   description?: Prisma.StringNullableWithAggregatesFilter<"InventoryField"> | string | null
   showInTable?: Prisma.BoolWithAggregatesFilter<"InventoryField"> | boolean
@@ -306,7 +306,7 @@ export type InventoryFieldScalarWhereWithAggregatesInput = {
 export type InventoryFieldCreateInput = {
   id?: string
   fieldName: string
-  fieldType: string
+  fieldType: $Enums.FieldType
   fieldOrder: number
   description?: string | null
   showInTable?: boolean
@@ -319,7 +319,7 @@ export type InventoryFieldUncheckedCreateInput = {
   id?: string
   inventoryId: string
   fieldName: string
-  fieldType: string
+  fieldType: $Enums.FieldType
   fieldOrder: number
   description?: string | null
   showInTable?: boolean
@@ -330,7 +330,7 @@ export type InventoryFieldUncheckedCreateInput = {
 export type InventoryFieldUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   fieldName?: Prisma.StringFieldUpdateOperationsInput | string
-  fieldType?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldType?: Prisma.EnumFieldTypeFieldUpdateOperationsInput | $Enums.FieldType
   fieldOrder?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showInTable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -343,7 +343,7 @@ export type InventoryFieldUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   inventoryId?: Prisma.StringFieldUpdateOperationsInput | string
   fieldName?: Prisma.StringFieldUpdateOperationsInput | string
-  fieldType?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldType?: Prisma.EnumFieldTypeFieldUpdateOperationsInput | $Enums.FieldType
   fieldOrder?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showInTable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -355,7 +355,7 @@ export type InventoryFieldCreateManyInput = {
   id?: string
   inventoryId: string
   fieldName: string
-  fieldType: string
+  fieldType: $Enums.FieldType
   fieldOrder: number
   description?: string | null
   showInTable?: boolean
@@ -365,7 +365,7 @@ export type InventoryFieldCreateManyInput = {
 export type InventoryFieldUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   fieldName?: Prisma.StringFieldUpdateOperationsInput | string
-  fieldType?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldType?: Prisma.EnumFieldTypeFieldUpdateOperationsInput | $Enums.FieldType
   fieldOrder?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showInTable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -376,7 +376,7 @@ export type InventoryFieldUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   inventoryId?: Prisma.StringFieldUpdateOperationsInput | string
   fieldName?: Prisma.StringFieldUpdateOperationsInput | string
-  fieldType?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldType?: Prisma.EnumFieldTypeFieldUpdateOperationsInput | $Enums.FieldType
   fieldOrder?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showInTable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -481,6 +481,10 @@ export type InventoryFieldUncheckedUpdateManyWithoutInventoryNestedInput = {
   deleteMany?: Prisma.InventoryFieldScalarWhereInput | Prisma.InventoryFieldScalarWhereInput[]
 }
 
+export type EnumFieldTypeFieldUpdateOperationsInput = {
+  set?: $Enums.FieldType
+}
+
 export type InventoryFieldCreateNestedOneWithoutFieldValuesInput = {
   create?: Prisma.XOR<Prisma.InventoryFieldCreateWithoutFieldValuesInput, Prisma.InventoryFieldUncheckedCreateWithoutFieldValuesInput>
   connectOrCreate?: Prisma.InventoryFieldCreateOrConnectWithoutFieldValuesInput
@@ -498,7 +502,7 @@ export type InventoryFieldUpdateOneRequiredWithoutFieldValuesNestedInput = {
 export type InventoryFieldCreateWithoutInventoryInput = {
   id?: string
   fieldName: string
-  fieldType: string
+  fieldType: $Enums.FieldType
   fieldOrder: number
   description?: string | null
   showInTable?: boolean
@@ -509,7 +513,7 @@ export type InventoryFieldCreateWithoutInventoryInput = {
 export type InventoryFieldUncheckedCreateWithoutInventoryInput = {
   id?: string
   fieldName: string
-  fieldType: string
+  fieldType: $Enums.FieldType
   fieldOrder: number
   description?: string | null
   showInTable?: boolean
@@ -550,7 +554,7 @@ export type InventoryFieldScalarWhereInput = {
   id?: Prisma.UuidFilter<"InventoryField"> | string
   inventoryId?: Prisma.UuidFilter<"InventoryField"> | string
   fieldName?: Prisma.StringFilter<"InventoryField"> | string
-  fieldType?: Prisma.StringFilter<"InventoryField"> | string
+  fieldType?: Prisma.EnumFieldTypeFilter<"InventoryField"> | $Enums.FieldType
   fieldOrder?: Prisma.IntFilter<"InventoryField"> | number
   description?: Prisma.StringNullableFilter<"InventoryField"> | string | null
   showInTable?: Prisma.BoolFilter<"InventoryField"> | boolean
@@ -560,7 +564,7 @@ export type InventoryFieldScalarWhereInput = {
 export type InventoryFieldCreateWithoutFieldValuesInput = {
   id?: string
   fieldName: string
-  fieldType: string
+  fieldType: $Enums.FieldType
   fieldOrder: number
   description?: string | null
   showInTable?: boolean
@@ -572,7 +576,7 @@ export type InventoryFieldUncheckedCreateWithoutFieldValuesInput = {
   id?: string
   inventoryId: string
   fieldName: string
-  fieldType: string
+  fieldType: $Enums.FieldType
   fieldOrder: number
   description?: string | null
   showInTable?: boolean
@@ -598,7 +602,7 @@ export type InventoryFieldUpdateToOneWithWhereWithoutFieldValuesInput = {
 export type InventoryFieldUpdateWithoutFieldValuesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   fieldName?: Prisma.StringFieldUpdateOperationsInput | string
-  fieldType?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldType?: Prisma.EnumFieldTypeFieldUpdateOperationsInput | $Enums.FieldType
   fieldOrder?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showInTable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -610,7 +614,7 @@ export type InventoryFieldUncheckedUpdateWithoutFieldValuesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   inventoryId?: Prisma.StringFieldUpdateOperationsInput | string
   fieldName?: Prisma.StringFieldUpdateOperationsInput | string
-  fieldType?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldType?: Prisma.EnumFieldTypeFieldUpdateOperationsInput | $Enums.FieldType
   fieldOrder?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showInTable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -620,7 +624,7 @@ export type InventoryFieldUncheckedUpdateWithoutFieldValuesInput = {
 export type InventoryFieldCreateManyInventoryInput = {
   id?: string
   fieldName: string
-  fieldType: string
+  fieldType: $Enums.FieldType
   fieldOrder: number
   description?: string | null
   showInTable?: boolean
@@ -630,7 +634,7 @@ export type InventoryFieldCreateManyInventoryInput = {
 export type InventoryFieldUpdateWithoutInventoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   fieldName?: Prisma.StringFieldUpdateOperationsInput | string
-  fieldType?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldType?: Prisma.EnumFieldTypeFieldUpdateOperationsInput | $Enums.FieldType
   fieldOrder?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showInTable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -641,7 +645,7 @@ export type InventoryFieldUpdateWithoutInventoryInput = {
 export type InventoryFieldUncheckedUpdateWithoutInventoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   fieldName?: Prisma.StringFieldUpdateOperationsInput | string
-  fieldType?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldType?: Prisma.EnumFieldTypeFieldUpdateOperationsInput | $Enums.FieldType
   fieldOrder?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showInTable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -652,7 +656,7 @@ export type InventoryFieldUncheckedUpdateWithoutInventoryInput = {
 export type InventoryFieldUncheckedUpdateManyWithoutInventoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   fieldName?: Prisma.StringFieldUpdateOperationsInput | string
-  fieldType?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldType?: Prisma.EnumFieldTypeFieldUpdateOperationsInput | $Enums.FieldType
   fieldOrder?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showInTable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -762,7 +766,7 @@ export type $InventoryFieldPayload<ExtArgs extends runtime.Types.Extensions.Inte
     id: string
     inventoryId: string
     fieldName: string
-    fieldType: string
+    fieldType: $Enums.FieldType
     fieldOrder: number
     description: string | null
     showInTable: boolean
@@ -1195,7 +1199,7 @@ export interface InventoryFieldFieldRefs {
   readonly id: Prisma.FieldRef<"InventoryField", 'String'>
   readonly inventoryId: Prisma.FieldRef<"InventoryField", 'String'>
   readonly fieldName: Prisma.FieldRef<"InventoryField", 'String'>
-  readonly fieldType: Prisma.FieldRef<"InventoryField", 'String'>
+  readonly fieldType: Prisma.FieldRef<"InventoryField", 'FieldType'>
   readonly fieldOrder: Prisma.FieldRef<"InventoryField", 'Int'>
   readonly description: Prisma.FieldRef<"InventoryField", 'String'>
   readonly showInTable: Prisma.FieldRef<"InventoryField", 'Boolean'>

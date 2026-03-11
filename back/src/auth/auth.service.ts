@@ -4,11 +4,14 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import * as crypto from 'crypto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { TelegramAuthDto } from './dto/telegram-auth.dto';
 import { UsersService } from '@/users/users.service';
 import * as bcrypt from 'bcryptjs';
 import { AuthMethod } from './enums/auth-method.enum';
+import type { Profile } from 'passport-google-oauth20';
 
 @Injectable()
 export class AuthService {
@@ -97,6 +100,65 @@ export class AuthService {
     }
   }
 
+  async validateOrCreateGoogleUser(profile: Profile) {
+    const googleId = profile.id;
+    let user = await this.userService.findByGoogleId(googleId);
+    if (!user) {
+      user = await this.userService.create({
+        googleId,
+        username: profile.displayName ?? profile.emails?.[0]?.value ?? googleId,
+        email: profile.emails?.[0]?.value,
+      });
+    }
+    return this.generateTokens(
+      user.id,
+      user.username,
+      user.isAdmin,
+      user.isBlocked,
+    );
+  }
+
+  async validateTelegramAuth(data: TelegramAuthDto) {
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    if (!botToken) throw new UnauthorizedException('Telegram not configured');
+
+    const { hash, ...fields } = data;
+    const checkStr = Object.entries(fields)
+      .filter(([, v]) => v !== undefined && v !== null)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([k, v]) => `${k}=${v}`)
+      .join('\n');
+
+    const secret = crypto.createHash('sha256').update(botToken).digest();
+    const computedHash = crypto
+      .createHmac('sha256', secret)
+      .update(checkStr)
+      .digest('hex');
+
+    if (computedHash !== hash) {
+      throw new UnauthorizedException('Invalid Telegram auth data');
+    }
+
+    if (Date.now() / 1000 - data.auth_date > 86400) {
+      throw new UnauthorizedException('Telegram auth data expired');
+    }
+
+    const telegramId = String(data.id);
+    let user = await this.userService.findByTelegramId(telegramId);
+    if (!user) {
+      user = await this.userService.create({
+        telegramId,
+        username: data.username ?? data.first_name,
+      });
+    }
+    return this.generateTokens(
+      user.id,
+      user.username,
+      user.isAdmin,
+      user.isBlocked,
+    );
+  }
+
   private async validateUser(loginDto: LoginDto) {
     switch (loginDto.authMethod) {
       case AuthMethod.PASSWORD: {
@@ -134,11 +196,11 @@ export class AuthService {
 
   private generateTokens(
     userId: string,
-    email: string,
+    username: string,
     isAdmin: boolean,
     isBlocked: boolean,
   ) {
-    const payload = { sub: userId, email, isAdmin, isBlocked };
+    const payload = { sub: userId, username, isAdmin, isBlocked };
 
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = this.jwtService.sign(payload, {
