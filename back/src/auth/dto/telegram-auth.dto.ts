@@ -2,11 +2,11 @@ import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class TelegramAuthDto {
   @IsInt()
-  id: number;
+  id!: number;
 
   @IsString()
   @IsNotEmpty()
-  first_name: string;
+  first_name!: string;
 
   @IsString()
   @IsOptional()
@@ -17,9 +17,9 @@ export class TelegramAuthDto {
   photo_url?: string;
 
   @IsInt()
-  auth_date: number;
+  auth_date!: number;
 
   @IsString()
   @IsNotEmpty()
-  hash: string;
+  hash!: string;
 }

@@ -5,5 +5,5 @@ import { CreateItemDto } from './create-item.dto';
 export class UpdateItemDto extends PartialType(CreateItemDto) {
   @IsInt()
   @IsNotEmpty()
-  version: number;
+  version!: number;
 }
