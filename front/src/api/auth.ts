@@ -20,6 +20,5 @@ export const authApi = {
       .post<{ accessToken: string }>('/auth/telegram/callback', data)
       .then((r) => r.data),
 
-  // Redirect-based OAuth — просто ссылки, не fetch
-  googleLoginUrl: '/api/auth/google',
+  googleLoginUrl: `${import.meta.env.VITE_API_URL}/auth/google`,
 }
