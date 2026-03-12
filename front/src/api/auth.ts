@@ -20,5 +20,24 @@ export const authApi = {
       .post<{ accessToken: string }>('/auth/telegram/callback', data)
       .then((r) => r.data),
 
+  login: (email: string, password: string) =>
+    apiClient
+      .post<{ accessToken: string }>('/auth/login', {
+        authMethod: 'password',
+        email,
+        password,
+      })
+      .then((r) => r.data),
+
+  register: (username: string, email: string, password: string) =>
+    apiClient
+      .post<{ accessToken: string }>('/auth/register', {
+        authMethod: 'password',
+        username,
+        email,
+        password,
+      })
+      .then((r) => r.data),
+
   googleLoginUrl: `${import.meta.env.VITE_API_URL}/auth/google`,
 }

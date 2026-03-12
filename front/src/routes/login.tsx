@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, isRedirect, useNavigate } from '@tanstack/react-router'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { authApi } from '@/api/auth'
 import { TOKEN_KEY } from '@/api/client'
 import { useAuthStore } from '@/store/auth.store'
@@ -7,13 +7,11 @@ import type { TelegramAuthData } from '@/api/auth'
 
 export const Route = createFileRoute('/login')({
   beforeLoad: async () => {
-    // если уже залогинен — редирект на главную
     try {
       await authApi.me()
       throw redirect({ to: '/' })
     } catch (err) {
       if (isRedirect(err)) throw err
-      // не залогинен — показываем страницу
     }
   },
   component: LoginPage,
@@ -23,16 +21,45 @@ function LoginPage() {
   const navigate = useNavigate()
   const { setUser } = useAuthStore()
   const telegramRef = useRef<HTMLDivElement>(null)
+  const [mode, setMode] = useState<'login' | 'register'>('login')
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const handleSuccess = async (accessToken: string) => {
+    localStorage.setItem(TOKEN_KEY, accessToken)
+    const user = await authApi.me()
+    setUser(user)
+    navigate({ to: '/' })
+  }
 
   const handleTelegramAuth = async (data: TelegramAuthData) => {
     try {
       const { accessToken } = await authApi.telegramCallback(data)
-      localStorage.setItem(TOKEN_KEY, accessToken)
-      const user = await authApi.me()
-      setUser(user)
-      navigate({ to: '/' })
+      await handleSuccess(accessToken)
     } catch {
-      // ignore errors silently
+      setError('Telegram auth failed')
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+    try {
+      if (mode === 'login') {
+        const { accessToken } = await authApi.login(email, password)
+        await handleSuccess(accessToken)
+      } else {
+        const { accessToken } = await authApi.register(username, email, password)
+        await handleSuccess(accessToken)
+      }
+    } catch (err: any) {
+      setError(err?.response?.data?.message ?? 'Something went wrong')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -64,11 +91,12 @@ function LoginPage() {
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-bold">Inventory</h1>
           <p className="text-muted-foreground text-sm">
-            Sign in to manage your inventories
+            {mode === 'login' ? 'Sign in to manage your inventories' : 'Create your account'}
           </p>
         </div>
 
-        <div className="border border-border rounded-xl p-6 space-y-3">
+        <div className="border border-border rounded-xl p-6 space-y-4">
+          {/* OAuth buttons */}
           <a
             href={authApi.googleLoginUrl}
             className="flex items-center justify-center gap-3 w-full h-10 px-4 border border-border rounded-lg text-sm font-medium hover:bg-accent transition-colors"
@@ -78,6 +106,62 @@ function LoginPage() {
           </a>
 
           <div ref={telegramRef} className="flex justify-center" />
+
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-px bg-border" />
+            <span className="text-xs text-muted-foreground">or</span>
+            <div className="flex-1 h-px bg-border" />
+          </div>
+
+          {/* Email/password form */}
+          <form onSubmit={handleSubmit} className="space-y-3">
+            {mode === 'register' && (
+              <input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                className="w-full h-10 px-3 border border-border rounded-lg text-sm bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+            )}
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full h-10 px-3 border border-border rounded-lg text-sm bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full h-10 px-3 border border-border rounded-lg text-sm bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+
+            {error && <p className="text-sm text-destructive">{error}</p>}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-10 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+            >
+              {loading ? '...' : mode === 'login' ? 'Sign in' : 'Create account'}
+            </button>
+          </form>
+
+          <p className="text-center text-sm text-muted-foreground">
+            {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+            <button
+              onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError('') }}
+              className="text-primary hover:underline"
+            >
+              {mode === 'login' ? 'Sign up' : 'Sign in'}
+            </button>
+          </p>
         </div>
       </div>
     </div>
