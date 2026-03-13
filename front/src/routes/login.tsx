@@ -32,7 +32,7 @@ function LoginPage() {
     localStorage.setItem(TOKEN_KEY, accessToken)
     const user = await authApi.me()
     setUser(user)
-    navigate({ to: '/' })
+    window.location.href = '/'
   }
 
   const handleTelegramAuth = async (data: TelegramAuthData) => {

@@ -4,10 +4,13 @@ import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/store/auth.store'
 import { useThemeStore } from '@/store/theme.store'
 import { authApi } from '@/api/auth'
+import { useEffect, useState } from 'react'
 
 export function Header() {
   const { user, logout } = useAuthStore()
   const { theme, toggle } = useThemeStore()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
   const handleLogout = async () => {
     await authApi.logout()
@@ -38,11 +41,11 @@ export function Header() {
         <div className="flex items-center gap-1">
           {/* Theme toggle */}
           <Button variant="ghost" size="sm" onClick={toggle} className="w-8 h-8 p-0">
-            {theme === 'dark' ? (
+            {mounted && (theme === 'dark' ? (
               <Sun className="w-4 h-4" />
             ) : (
               <Moon className="w-4 h-4" />
-            )}
+            ))}
           </Button>
 
           {user ? (

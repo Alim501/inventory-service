@@ -3,7 +3,7 @@ import axios from 'axios'
 export const TOKEN_KEY = 'access_token'
 
 export const apiClient = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : '/api',
   withCredentials: true,
 })
 
@@ -19,9 +19,8 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && error.config?.url !== '/auth/me') {
       localStorage.removeItem(TOKEN_KEY)
-      window.location.href = '/login'
     }
     return Promise.reject(error)
   },
