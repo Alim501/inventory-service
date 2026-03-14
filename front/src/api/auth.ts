@@ -39,5 +39,5 @@ export const authApi = {
       })
       .then((r) => r.data),
 
-  googleLoginUrl: `${import.meta.env.VITE_API_URL}api/auth/google`,
+  googleLoginUrl: `${import.meta.env.VITE_API_URL}/api/auth/google`,
 }
