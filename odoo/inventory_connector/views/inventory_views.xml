@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inventory_import_list" model="ir.ui.view">
+        <field name="name">inventory.import.list</field>
+        <field name="model">inventory.import</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="category"/>
+                <field name="item_count"/>
+                <field name="last_imported"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_inventory_import_form" model="ir.ui.view">
+        <field name="name">inventory.import.form</field>
+        <field name="model">inventory.import</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_import" type="object" string="Import from API" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="api_token"/>
+                        <field name="category"/>
+                        <field name="item_count"/>
+                        <field name="last_imported"/>
+                        <field name="description"/>
+                    </group>
+                    <notebook>
+                        <page string="Fields">
+                            <field name="field_ids">
+                                <tree>
+                                    <field name="field_name"/>
+                                    <field name="field_type"/>
+                                    <field name="aggregation"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_inventory_import" model="ir.actions.act_window">
+        <field name="name">Inventories</field>
+        <field name="res_model">inventory.import</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="menu_inventory_connector" model="ir.ui.menu">
+        <field name="name">Inventory Connector</field>
+        <field name="action" ref="action_inventory_import"/>
+        <field name="sequence">100</field>
+    </record>
+</odoo>

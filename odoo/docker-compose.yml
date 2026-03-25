@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+      POSTGRES_DB: odoo
+    volumes:
+      - odoo-db:/var/lib/postgresql/data
+
+  odoo:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "8070:8069"
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: odoo
+    command: odoo -i base -d odoo
+    volumes:
+      - ./inventory_connector:/mnt/extra-addons/inventory_connector
+
+volumes:
+  odoo-db:

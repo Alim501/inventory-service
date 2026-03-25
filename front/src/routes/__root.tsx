@@ -1,4 +1,5 @@
 import { HeadContent, Scripts, createRootRoute, Link, useNavigate } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { QueryClientProvider } from '@tanstack/react-query'
@@ -10,6 +11,7 @@ import { authApi } from '../api/auth'
 import { useAuthStore } from '../store/auth.store'
 import { queryClient } from '../router'
 import { TOKEN_KEY } from '../api/client'
+import '../lib/i18n'
 
 import appCss from '../styles.css?url'
 
@@ -27,18 +29,19 @@ export const Route = createRootRoute({
 })
 
 function NotFound() {
+  const { t } = useTranslation()
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
       <PackageSearch className="w-16 h-16 text-muted-foreground/30 mb-4" />
-      <h1 className="text-2xl font-bold mb-2">Page not found</h1>
+      <h1 className="text-2xl font-bold mb-2">{t('notFound.title')}</h1>
       <p className="text-muted-foreground text-sm mb-6">
-        The page you're looking for doesn't exist or was moved.
+        {t('notFound.subtitle')}
       </p>
       <Link
         to="/"
         className="text-sm font-medium underline underline-offset-4 hover:text-primary"
       >
-        Go home
+        {t('notFound.goHome')}
       </Link>
     </div>
   )

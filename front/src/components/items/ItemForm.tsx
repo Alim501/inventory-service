@@ -1,10 +1,11 @@
-import { useForm, FormProvider } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { Loader2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { useTranslation } from 'react-i18next'
 import { ItemFieldInput } from './ItemFieldInput'
 import type { InventoryField, Item } from '@/lib/types'
 import type { CreateItemPayload } from '@/api/items'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 interface FieldValueForm {
   fieldId: string
@@ -15,11 +16,11 @@ interface FieldValueForm {
 
 export interface ItemFormValues {
   customId?: string
-  fieldValues: FieldValueForm[]
+  fieldValues: Array<FieldValueForm>
 }
 
 interface ItemFormProps {
-  fields: InventoryField[]
+  fields: Array<InventoryField>
   defaultValues?: Item
   hasCustomIdFormat: boolean
   onSubmit: (data: CreateItemPayload) => void
@@ -33,8 +34,9 @@ export function ItemForm({
   hasCustomIdFormat,
   onSubmit,
   isLoading,
-  submitLabel = 'Save',
+  submitLabel,
 }: ItemFormProps) {
+  const { t } = useTranslation()
   const methods = useForm<ItemFormValues>({
     defaultValues: {
       customId: defaultValues?.customId ?? '',
@@ -59,7 +61,6 @@ export function ItemForm({
       customId: values.customId || undefined,
       fieldValues: values.fieldValues.map((fv) => {
         const field = fields.find((f) => f.id === fv.fieldId)!
-        // only send the relevant value for the field type
         if (field.fieldType === 'number') {
           return { fieldId: fv.fieldId, numericValue: fv.numericValue }
         }
@@ -79,12 +80,15 @@ export function ItemForm({
         {!hasCustomIdFormat && (
           <div>
             <label className="text-sm font-medium mb-1 block">
-              Custom ID
+              {t('items.customId')}
               <span className="ml-1 text-xs text-muted-foreground font-normal">
-                (leave empty to auto-generate)
+                {t('items.customIdPlaceholder')}
               </span>
             </label>
-            <Input placeholder="e.g. BOOK-001" {...register('customId')} />
+            <Input
+              placeholder={t('items.customIdExample')}
+              {...register('customId')}
+            />
           </div>
         )}
 
@@ -98,14 +102,14 @@ export function ItemForm({
 
         {fields.length === 0 && (
           <p className="text-sm text-muted-foreground text-center py-4">
-            This inventory has no custom fields.
+            {t('items.noFields')}
           </p>
         )}
 
         <div className="flex justify-end pt-2">
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            {submitLabel}
+            {submitLabel ?? t('common.save')}
           </Button>
         </div>
       </form>

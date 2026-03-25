@@ -11,8 +11,21 @@ export class TagsService {
     return this.prisma.tag.create({ data: { name: dto.name } });
   }
 
-  findAll() {
-    return this.prisma.tag.findMany({ orderBy: { name: 'asc' } });
+  findOrCreate(name: string) {
+    return this.prisma.tag.upsert({
+      where: { name },
+      create: { name },
+      update: {},
+    });
+  }
+
+  findAll(search?: string) {
+    return this.prisma.tag.findMany({
+      where: search
+        ? { name: { contains: search, mode: 'insensitive' } }
+        : undefined,
+      orderBy: { name: 'asc' },
+    });
   }
 
   findOne(id: string) {

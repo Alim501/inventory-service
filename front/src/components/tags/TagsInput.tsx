@@ -1,31 +1,40 @@
-import { useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { useTags, useCreateTag } from '@/hooks/useTags'
+import { useTranslation } from 'react-i18next'
 import type { Tag } from '@/lib/types'
+import { Input } from '@/components/ui/input'
+import { tagsApi } from '@/api/tags'
+import { useCreateTag } from '@/hooks/useTags'
 
 interface TagsInputProps {
-  value: Tag[]
-  onChange: (tags: Tag[]) => void
+  value: Array<Tag>
+  onChange: (tags: Array<Tag>) => void
 }
 
 export function TagsInput({ value, onChange }: TagsInputProps) {
+  const { t } = useTranslation()
   const [query, setQuery] = useState('')
+  const [suggestions, setSuggestions] = useState<Array<Tag>>([])
   const [open, setOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
-
-  const { data: allTags = [] } = useTags()
   const { mutate: createTag } = useCreateTag()
 
-  const suggestions = allTags.filter(
-    (t) =>
-      t.name.toLowerCase().includes(query.toLowerCase()) &&
-      !value.some((v) => v.id === t.id),
-  )
+  useEffect(() => {
+    if (!query.trim()) {
+      setSuggestions([])
+      return
+    }
+    const timer = setTimeout(async () => {
+      const results = await tagsApi.search(query.trim())
+      setSuggestions(results.filter((t) => !value.some((v) => v.id === t.id)))
+    }, 250)
+    return () => clearTimeout(timer)
+  }, [query, value])
 
   const addTag = (tag: Tag) => {
     onChange([...value, tag])
     setQuery('')
+    setSuggestions([])
     setOpen(false)
     inputRef.current?.focus()
   }
@@ -37,18 +46,13 @@ export function TagsInput({ value, onChange }: TagsInputProps) {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && query.trim()) {
       e.preventDefault()
-      // если точное совпадение — добавляем существующий
-      const exact = allTags.find(
+      const exact = suggestions.find(
         (t) => t.name.toLowerCase() === query.trim().toLowerCase(),
       )
       if (exact) {
-        if (!value.some((v) => v.id === exact.id)) addTag(exact)
-        else setQuery('')
+        addTag(exact)
       } else {
-        // создаём новый тег
-        createTag(query.trim(), {
-          onSuccess: (tag) => addTag(tag),
-        })
+        createTag(query.trim(), { onSuccess: (tag) => addTag(tag) })
       }
     }
     if (e.key === 'Backspace' && !query && value.length > 0) {
@@ -56,6 +60,10 @@ export function TagsInput({ value, onChange }: TagsInputProps) {
     }
     if (e.key === 'Escape') setOpen(false)
   }
+
+  const exactMatch = suggestions.some(
+    (t) => t.name.toLowerCase() === query.trim().toLowerCase(),
+  )
 
   return (
     <div className="relative">
@@ -91,12 +99,12 @@ export function TagsInput({ value, onChange }: TagsInputProps) {
           onFocus={() => setOpen(true)}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
           onKeyDown={handleKeyDown}
-          placeholder={value.length === 0 ? 'Add tags...' : ''}
+          placeholder={value.length === 0 ? t('tags.placeholder') : ''}
           className="border-0 shadow-none focus-visible:ring-0 h-6 px-0 text-sm flex-1 min-w-[100px]"
         />
       </div>
 
-      {open && (suggestions.length > 0 || query.trim()) && (
+      {open && query.trim() && (suggestions.length > 0 || !exactMatch) && (
         <div className="absolute top-full mt-1 left-0 right-0 z-50 bg-popover border border-border rounded-lg shadow-md overflow-hidden">
           {suggestions.map((tag) => (
             <button
@@ -108,20 +116,17 @@ export function TagsInput({ value, onChange }: TagsInputProps) {
               {tag.name}
             </button>
           ))}
-          {query.trim() &&
-            !allTags.some(
-              (t) => t.name.toLowerCase() === query.trim().toLowerCase(),
-            ) && (
-              <button
-                type="button"
-                onMouseDown={() =>
-                  createTag(query.trim(), { onSuccess: (tag) => addTag(tag) })
-                }
-                className="w-full text-left px-3 py-1.5 text-sm hover:bg-accent text-muted-foreground"
-              >
-                Create "{query.trim()}"
-              </button>
-            )}
+          {!exactMatch && (
+            <button
+              type="button"
+              onMouseDown={() =>
+                createTag(query.trim(), { onSuccess: (tag) => addTag(tag) })
+              }
+              className="w-full text-left px-3 py-1.5 text-sm hover:bg-accent text-muted-foreground"
+            >
+              {t('tags.create', { query: query.trim() })}
+            </button>
+          )}
         </div>
       )}
     </div>

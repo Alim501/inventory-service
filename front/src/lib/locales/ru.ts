@@ -1,0 +1,190 @@
+import type { Translation } from './en'
+
+export const ru: Translation = {
+  nav: {
+    brand: 'Инвентарь',
+    myInventories: 'Мои инвентари',
+    admin: 'Админ',
+    signIn: 'Войти',
+  },
+
+  common: {
+    save: 'Сохранить',
+    saved: 'Сохранено!',
+    cancel: 'Отмена',
+    delete: 'Удалить',
+    edit: 'Редактировать',
+    loading: 'Загрузка…',
+    accessDenied: 'Нет доступа.',
+  },
+
+  login: {
+    signInTitle: 'Войдите, чтобы управлять инвентарями',
+    registerTitle: 'Создайте аккаунт',
+    continueWithGoogle: 'Войти через Google',
+    or: 'или',
+    username: 'Имя пользователя',
+    email: 'Email',
+    password: 'Пароль',
+    signIn: 'Войти',
+    createAccount: 'Создать аккаунт',
+    noAccount: 'Нет аккаунта?',
+    alreadyAccount: 'Уже есть аккаунт?',
+    signUp: 'Зарегистрироваться',
+    telegramFailed: 'Ошибка авторизации через Telegram',
+    somethingWentWrong: 'Что-то пошло не так',
+  },
+
+  profile: {
+    pleaseSignIn: 'Пожалуйста, войдите.',
+    username: 'Имя пользователя',
+    email: 'Email',
+  },
+
+  home: {
+    title: 'Публичные инвентари',
+    subtitle: 'Просматривайте и дополняйте публичные коллекции',
+    noInventories: 'Публичных инвентарей пока нет',
+    newInventory: 'Новый инвентарь',
+  },
+
+  inventories: {
+    title: 'Мои инвентари',
+    subtitle: 'Управляйте своими коллекциями',
+    newInventory: 'Новый инвентарь',
+    empty: 'У вас пока нет инвентарей',
+    emptyAction: 'Создайте первый инвентарь',
+  },
+
+  inventory: {
+    notFound: 'Инвентарь не найден или доступ запрещён',
+    share: 'Поделиться',
+    sharedAccess: 'Общий доступ',
+    fields: 'Поля',
+    items: 'Элементы',
+    editTitle: 'Редактировать инвентарь',
+    apiTokenGenerate: 'Создать API-токен',
+    apiTokenCopy: 'Скопировать',
+    apiTokenCopied: 'Скопировано!',
+    apiTokenRegenerate: 'Пересоздать токен',
+  },
+
+  inventoryForm: {
+    newTitle: 'Новый инвентарь',
+    newSubtitle: 'Настройте шаблон коллекции',
+    titleLabel: 'Название *',
+    titlePlaceholder: 'Моя коллекция',
+    description: 'Описание',
+    descriptionPlaceholder: 'О чём этот инвентарь?',
+    category: 'Категория',
+    categoryNone: '— Без категории —',
+    isPublic: 'Публичный инвентарь',
+    tags: 'Теги',
+    create: 'Создать инвентарь',
+    save: 'Сохранить изменения',
+  },
+
+  fieldsEditor: {
+    title: 'Пользовательские поля',
+    empty: 'Полей пока нет. Добавьте поля с помощью кнопок выше.',
+    fieldName: 'Название поля',
+    description: 'Описание (необязательно)',
+    showInTable: 'Показывать в таблице',
+  },
+
+  customId: {
+    title: 'Формат пользовательского ID',
+    preview: 'Предпросмотр:',
+    empty: 'пусто',
+    noElements: 'Нет элементов. По умолчанию будет UUID.',
+    addText: 'Текст (например BOOK- или 🎯)',
+    addSequence: 'Формат: D3 (001), D4 (0001)',
+    addDatetime: 'Формат: yyyy, MM, dd, HH, mm',
+  },
+
+  items: {
+    id: 'ID',
+    addedBy: 'Добавил',
+    noItems: 'Элементов пока нет',
+    addItem: 'Добавить элемент',
+    deleteSelected: 'Удалить {{count}} выбранных',
+    customId: 'Пользовательский ID',
+    customIdPlaceholder: '(оставьте пустым для автогенерации)',
+    customIdExample: 'например BOOK-001',
+    noFields: 'У этого инвентаря нет пользовательских полей.',
+    noFieldValues: 'Нет значений полей.',
+    urlPlaceholder: 'https://...',
+    yes: 'Да',
+    editTitle: 'Редактировать элемент',
+  },
+
+  comments: {
+    title: 'Комментарии',
+    firstComment: 'Будьте первым!',
+    noComments: 'Комментариев пока нет.',
+    placeholder: 'Написать комментарий… (поддерживается Markdown)',
+    post: 'Отправить',
+    deleteConfirm: 'Удалить комментарий?',
+    save: 'Сохранить',
+    cancel: 'Отмена',
+  },
+
+  access: {
+    placeholder: 'Имя пользователя',
+    userNotFound: 'Пользователь не найден',
+    grantFailed: 'Не удалось выдать доступ',
+    searchFailed: 'Не удалось найти пользователей',
+    noShared: 'Пока никто не добавлен.',
+  },
+
+  tags: {
+    placeholder: 'Добавить теги...',
+    create: 'Создать "{{query}}"',
+  },
+
+  admin: {
+    title: 'Панель администратора',
+    totalUsers: 'Всего пользователей',
+    admins: 'Администраторы',
+    blocked: 'Заблокированные',
+    inventories: 'Инвентари',
+    manageUsers: 'Управление пользователями',
+    usersTitle: 'Пользователи',
+    colUsername: 'Имя пользователя',
+    colEmail: 'Email',
+    colRole: 'Администратор',
+    colRoleUser: 'Пользователь',
+    colStatus: 'Статус',
+    colStatusActive: 'Активен',
+    colStatusBlocked: 'Заблокирован',
+    colJoined: 'Дата регистрации',
+    colActions: 'Действия',
+    deleteConfirm: 'Удалить пользователя "{{username}}"?',
+    removeAdmin: 'Снять права',
+    makeAdmin: 'Сделать админом',
+    block: 'Заблокировать',
+    unblock: 'Разблокировать',
+    deleteUser: 'Удалить',
+  },
+
+  support: {
+    title: 'Сообщить о проблеме',
+    summary: 'Описание',
+    summaryPlaceholder: 'Опишите проблему…',
+    priority: 'Приоритет',
+    priority_High: 'Высокий',
+    priority_Average: 'Средний',
+    priority_Low: 'Низкий',
+    pageLink: 'Страница',
+    inventoryTitle: 'Инвентарь (необязательно)',
+    inventoryTitlePlaceholder: 'О каком инвентаре идёт речь?',
+    submit: 'Отправить',
+    submitted: 'Спасибо, ваш отчёт отправлен.',
+  },
+
+  notFound: {
+    title: 'Страница не найдена',
+    subtitle: 'Страница, которую вы ищете, не существует или была перемещена.',
+    goHome: 'На главную',
+  },
+}

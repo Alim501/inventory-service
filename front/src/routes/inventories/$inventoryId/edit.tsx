@@ -1,21 +1,23 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
+import type { CreateInventoryPayload } from '@/api/inventories'
+import type { Tag } from '@/lib/types'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { InventoryForm } from '@/components/inventories/InventoryForm'
 import { useInventory, useUpdateInventory } from '@/hooks/useInventories'
-import type { CreateInventoryPayload } from '@/api/inventories'
-import type { Tag } from '@/lib/types'
 
 export const Route = createFileRoute('/inventories/$inventoryId/edit')({
   component: EditInventoryPage,
 })
 
 function EditInventoryPage() {
+  const { t } = useTranslation()
   const { inventoryId } = Route.useParams()
   const navigate = useNavigate()
   const { data: inventory, isLoading } = useInventory(inventoryId)
   const { mutate: update, isPending } = useUpdateInventory(inventoryId)
 
-  const handleSubmit = (data: CreateInventoryPayload, tags: Tag[]) => {
+  const handleSubmit = (data: CreateInventoryPayload, tags: Array<Tag>) => {
     if (!inventory) return
     update(
       { ...data, version: inventory.version, tagIds: tags.map((t) => t.id) },
@@ -41,7 +43,7 @@ function EditInventoryPage() {
   return (
     <PageLayout className="max-w-2xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold">Edit Inventory</h1>
+        <h1 className="text-2xl font-bold">{t('inventory.editTitle')}</h1>
         <p className="text-muted-foreground text-sm mt-1">{inventory?.title}</p>
       </div>
 
@@ -49,7 +51,7 @@ function EditInventoryPage() {
         defaultValues={inventory}
         onSubmit={handleSubmit}
         isLoading={isPending}
-        submitLabel="Save Changes"
+        submitLabel={t('inventoryForm.save')}
       />
     </PageLayout>
   )

@@ -3,6 +3,7 @@ import type { User } from '@/lib/types'
 
 export interface UpdateProfilePayload {
   username?: string
+  email?: string
   preferredLanguage?: string
   preferredTheme?: string
 }
@@ -15,8 +16,14 @@ export interface UpdateUserAdminPayload {
 }
 
 export const usersApi = {
-  // Admin
-  getAll: () => apiClient.get<User[]>('/users').then((r) => r.data),
+  getAll: () => apiClient.get<Array<User>>('/users').then((r) => r.data),
+
+  searchByUsername: (username: string) =>
+    apiClient
+      .get<{ id: string; username: string }>('/users/search', {
+        params: { username },
+      })
+      .then((r) => r.data),
 
   getOne: (id: string) =>
     apiClient.get<User>(`/users/${id}`).then((r) => r.data),
@@ -26,7 +33,6 @@ export const usersApi = {
 
   remove: (id: string) => apiClient.delete(`/users/${id}`),
 
-  // Profile (current user)
   getMe: () => apiClient.get<User>('/users/me').then((r) => r.data),
 
   updateMe: (data: UpdateProfilePayload) =>

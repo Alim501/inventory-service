@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { commentsApi } from '@/api/comments'
 
 export const commentKeys = {
@@ -10,7 +10,7 @@ export function useComments(inventoryId: string) {
     queryKey: commentKeys.forInventory(inventoryId),
     queryFn: () => commentsApi.getForInventory(inventoryId),
     enabled: !!inventoryId,
-    refetchInterval: 3000, // polling every 3s for real-time feel
+    refetchInterval: 3000,
   })
 }
 

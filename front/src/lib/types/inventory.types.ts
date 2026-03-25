@@ -31,12 +31,22 @@ export type CustomIdElementType =
 
 export interface CustomIdElement {
   type: CustomIdElementType
-  value?: string  // for 'fixed'
-  format?: string // for 'sequence' (e.g. "D3"), 'datetime' (e.g. "yyyy"), 'random' (e.g. "X5")
+  value?: string
+  format?: string
 }
 
 export interface CustomIdFormat {
-  elements: CustomIdElement[]
+  elements: Array<CustomIdElement>
+}
+
+export interface InventoryAccess {
+  inventoryId: string
+  userId: string
+  user: {
+    id: string
+    username: string
+    email: string | null
+  }
 }
 
 export interface Inventory {
@@ -48,12 +58,14 @@ export interface Inventory {
   imageUrl: string | null
   isPublic: boolean
   customIdFormat: CustomIdFormat | null
+  apiToken: string | null
   version: number
   createdAt: string
   updatedAt: string
   creator?: Pick<User, 'id' | 'username' | 'avatarUrl'>
-  fields?: InventoryField[]
-  tags?: Tag[]
+  fields?: Array<InventoryField>
+  tags?: Array<Tag>
+  accessUsers?: Array<{ userId: string }>
   _count?: {
     items: number
     comments: number

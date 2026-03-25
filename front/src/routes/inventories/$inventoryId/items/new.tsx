@@ -1,15 +1,17 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
+import type { CreateItemPayload } from '@/api/items'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { ItemForm } from '@/components/items/ItemForm'
 import { useInventory } from '@/hooks/useInventories'
 import { useCreateItem } from '@/hooks/useItems'
-import type { CreateItemPayload } from '@/api/items'
 
 export const Route = createFileRoute('/inventories/$inventoryId/items/new')({
   component: NewItemPage,
 })
 
 function NewItemPage() {
+  const { t } = useTranslation()
   const { inventoryId } = Route.useParams()
   const navigate = useNavigate()
   const { data: inventory, isLoading } = useInventory(inventoryId)
@@ -37,16 +39,16 @@ function NewItemPage() {
   return (
     <PageLayout className="max-w-xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold">Add Item</h1>
+        <h1 className="text-2xl font-bold">{t('items.addItem')}</h1>
         <p className="text-muted-foreground text-sm mt-1">{inventory.title}</p>
       </div>
 
       <ItemForm
         fields={inventory.fields ?? []}
-        hasCustomIdFormat={!!inventory.customIdFormat?.elements?.length}
+        hasCustomIdFormat={!!inventory.customIdFormat?.elements.length}
         onSubmit={handleSubmit}
         isLoading={isPending}
-        submitLabel="Add Item"
+        submitLabel={t('items.addItem')}
       />
     </PageLayout>
   )

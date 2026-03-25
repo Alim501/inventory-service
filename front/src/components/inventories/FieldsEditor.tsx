@@ -1,20 +1,29 @@
 import { useFieldArray, useFormContext } from 'react-hook-form'
-import { Plus, Trash2, GripVertical } from 'lucide-react'
+import { GripVertical, Plus, Trash2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import type { FieldType } from '@/lib/types/inventory.types'
+import type { InventoryFormValues } from './InventoryForm'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { FIELD_TYPE_LABELS, FIELD_TYPE_LIMITS } from '@/lib/constants'
-import type { FieldType } from '@/lib/types/inventory.types'
-import type { InventoryFormValues } from './InventoryForm'
 
-const FIELD_TYPES = Object.keys(FIELD_TYPE_LABELS) as FieldType[]
+const FIELD_TYPES = Object.keys(FIELD_TYPE_LABELS) as Array<FieldType>
 
 export function FieldsEditor() {
-  const { register, watch, formState: { errors } } = useFormContext<InventoryFormValues>()
-  const { fields, append, remove, move } = useFieldArray<InventoryFormValues, 'fields'>({
+  const { t } = useTranslation()
+  const {
+    register,
+    watch,
+    formState: { errors },
+  } = useFormContext<InventoryFormValues>()
+  const { fields, append, remove, move } = useFieldArray<
+    InventoryFormValues,
+    'fields'
+  >({
     name: 'fields',
   })
 
-  const watchedFields = watch('fields') ?? []
+  const watchedFields = watch('fields')
 
   const countByType = (type: FieldType) =>
     watchedFields.filter((f) => f.fieldType === type).length
@@ -36,7 +45,7 @@ export function FieldsEditor() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium">Custom Fields</h3>
+        <h3 className="text-sm font-medium">{t('fieldsEditor.title')}</h3>
         <div className="flex gap-1 flex-wrap justify-end">
           {FIELD_TYPES.map((type) => (
             <Button
@@ -60,7 +69,7 @@ export function FieldsEditor() {
 
       {fields.length === 0 && (
         <p className="text-sm text-muted-foreground text-center py-6 border border-dashed border-border rounded-lg">
-          No fields yet. Add fields using the buttons above.
+          {t('fieldsEditor.empty')}
         </p>
       )}
 
@@ -74,7 +83,6 @@ export function FieldsEditor() {
               type="button"
               className="mt-2 cursor-grab text-muted-foreground hover:text-foreground"
               onMouseDown={(e) => {
-                // drag-and-drop simplified via up/down for now
                 e.preventDefault()
               }}
             >
@@ -87,13 +95,13 @@ export function FieldsEditor() {
                   {FIELD_TYPE_LABELS[watchedFields[index]?.fieldType]}
                 </span>
                 <Input
-                  placeholder="Field name"
+                  placeholder={t('fieldsEditor.fieldName')}
                   className="h-8 text-sm"
                   {...register(`fields.${index}.fieldName`)}
                 />
               </div>
               <Input
-                placeholder="Description (optional)"
+                placeholder={t('fieldsEditor.description')}
                 className="h-8 text-xs col-span-2"
                 {...register(`fields.${index}.description`)}
               />
@@ -103,7 +111,7 @@ export function FieldsEditor() {
                   {...register(`fields.${index}.showInTable`)}
                   className="rounded"
                 />
-                Show in table
+                {t('fieldsEditor.showInTable')}
               </label>
             </div>
 

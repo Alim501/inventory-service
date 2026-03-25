@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import Markdown from 'react-markdown'
-import { Pencil, Trash2, Check, X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { useUpdateComment, useDeleteComment } from '@/hooks/useComments'
-import { useAuthStore } from '@/store/auth.store'
+import { useTranslation } from 'react-i18next'
+import { Check, Pencil, Trash2, X } from 'lucide-react'
 import type { Comment } from '@/lib/types'
+import { Button } from '@/components/ui/button'
+import { useDeleteComment, useUpdateComment } from '@/hooks/useComments'
+import { useAuthStore } from '@/store/auth.store'
 
 interface CommentItemProps {
   comment: Comment
@@ -12,12 +13,15 @@ interface CommentItemProps {
 }
 
 export function CommentItem({ comment, inventoryId }: CommentItemProps) {
+  const { t } = useTranslation()
   const { user } = useAuthStore()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(comment.content)
 
-  const { mutate: update, isPending: isUpdating } = useUpdateComment(inventoryId)
-  const { mutate: remove, isPending: isRemoving } = useDeleteComment(inventoryId)
+  const { mutate: update, isPending: isUpdating } =
+    useUpdateComment(inventoryId)
+  const { mutate: remove, isPending: isRemoving } =
+    useDeleteComment(inventoryId)
 
   const canEdit = user?.isAdmin || user?.id === comment.userId
 
@@ -35,7 +39,7 @@ export function CommentItem({ comment, inventoryId }: CommentItemProps) {
   }
 
   const handleRemove = () => {
-    if (!confirm('Delete this comment?')) return
+    if (!confirm(t('comments.deleteConfirm'))) return
     remove(comment.id)
   }
 
@@ -51,7 +55,7 @@ export function CommentItem({ comment, inventoryId }: CommentItemProps) {
           />
         ) : (
           <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
-            {comment.user?.username?.[0]?.toUpperCase() ?? '?'}
+            {comment.user?.username[0]?.toUpperCase() ?? '?'}
           </div>
         )}
       </div>
@@ -102,11 +106,11 @@ export function CommentItem({ comment, inventoryId }: CommentItemProps) {
                 disabled={isUpdating || !draft.trim()}
               >
                 <Check className="w-3 h-3 mr-1" />
-                Save
+                {t('comments.save')}
               </Button>
               <Button variant="ghost" size="sm" onClick={handleCancel}>
                 <X className="w-3 h-3 mr-1" />
-                Cancel
+                {t('comments.cancel')}
               </Button>
             </div>
           </div>

@@ -109,6 +109,7 @@ export const InventoryScalarFieldEnum = {
   isPublic: 'isPublic',
   customIdFormat: 'customIdFormat',
   version: 'version',
+  apiToken: 'apiToken',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

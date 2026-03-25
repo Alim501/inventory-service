@@ -1,20 +1,27 @@
 import { useState } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Loader2 } from 'lucide-react'
+import { FieldsEditor } from './FieldsEditor'
+import { CustomIdBuilder } from './CustomIdBuilder'
+import type { Inventory, Tag } from '@/lib/types'
+import type { CreateInventoryPayload } from '@/api/inventories'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { INVENTORY_CATEGORIES } from '@/lib/constants'
-import { FieldsEditor } from './FieldsEditor'
-import { CustomIdBuilder } from './CustomIdBuilder'
 import { TagsInput } from '@/components/tags/TagsInput'
-import type { Inventory, Tag } from '@/lib/types'
-import type { CreateInventoryPayload } from '@/api/inventories'
 
 const fieldSchema = z.object({
   fieldName: z.string().min(1, 'Required'),
-  fieldType: z.enum(['text_single', 'text_multi', 'number', 'boolean', 'image']),
+  fieldType: z.enum([
+    'text_single',
+    'text_multi',
+    'number',
+    'boolean',
+    'image',
+  ]),
   fieldOrder: z.number(),
   description: z.string().optional(),
   showInTable: z.boolean(),
@@ -22,8 +29,14 @@ const fieldSchema = z.object({
 
 const customIdElementSchema = z.object({
   type: z.enum([
-    'fixed', 'sequence', 'random_20bit', 'random_32bit',
-    'random_6digit', 'random_9digit', 'guid', 'datetime',
+    'fixed',
+    'sequence',
+    'random_20bit',
+    'random_32bit',
+    'random_6digit',
+    'random_9digit',
+    'guid',
+    'datetime',
   ]),
   value: z.string().optional(),
   format: z.string().optional(),
@@ -44,7 +57,7 @@ export type InventoryFormValues = z.infer<typeof inventorySchema>
 
 interface InventoryFormProps {
   defaultValues?: Partial<Inventory>
-  onSubmit: (data: CreateInventoryPayload, tags: Tag[]) => void
+  onSubmit: (data: CreateInventoryPayload, tags: Array<Tag>) => void
   isLoading?: boolean
   submitLabel?: string
 }
@@ -53,9 +66,10 @@ export function InventoryForm({
   defaultValues,
   onSubmit,
   isLoading,
-  submitLabel = 'Save',
+  submitLabel,
 }: InventoryFormProps) {
-  const [tags, setTags] = useState<Tag[]>(defaultValues?.tags ?? [])
+  const { t } = useTranslation()
+  const [tags, setTags] = useState<Array<Tag>>(defaultValues?.tags ?? [])
 
   const methods = useForm<InventoryFormValues>({
     resolver: zodResolver(inventorySchema),
@@ -64,13 +78,14 @@ export function InventoryForm({
       description: defaultValues?.description ?? '',
       category: defaultValues?.category ?? '',
       isPublic: defaultValues?.isPublic ?? false,
-      fields: defaultValues?.fields?.map((f) => ({
-        fieldName: f.fieldName,
-        fieldType: f.fieldType,
-        fieldOrder: f.fieldOrder,
-        description: f.description ?? '',
-        showInTable: f.showInTable,
-      })) ?? [],
+      fields:
+        defaultValues?.fields?.map((f) => ({
+          fieldName: f.fieldName,
+          fieldType: f.fieldType,
+          fieldOrder: f.fieldOrder,
+          description: f.description ?? '',
+          showInTable: f.showInTable,
+        })) ?? [],
       customIdFormat: {
         elements: defaultValues?.customIdFormat?.elements ?? [],
       },
@@ -104,30 +119,41 @@ export function InventoryForm({
         {/* Basic info */}
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium mb-1 block">Title *</label>
-            <Input placeholder="My Collection" {...register('title')} />
+            <label className="text-sm font-medium mb-1 block">
+              {t('inventoryForm.titleLabel')}
+            </label>
+            <Input
+              placeholder={t('inventoryForm.titlePlaceholder')}
+              {...register('title')}
+            />
             {errors.title && (
-              <p className="text-xs text-destructive mt-1">{errors.title.message}</p>
+              <p className="text-xs text-destructive mt-1">
+                {errors.title.message}
+              </p>
             )}
           </div>
 
           <div>
-            <label className="text-sm font-medium mb-1 block">Description</label>
+            <label className="text-sm font-medium mb-1 block">
+              {t('inventoryForm.description')}
+            </label>
             <textarea
               className="w-full min-h-[80px] rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-              placeholder="What is this inventory about?"
+              placeholder={t('inventoryForm.descriptionPlaceholder')}
               {...register('description')}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium mb-1 block">Category</label>
+              <label className="text-sm font-medium mb-1 block">
+                {t('inventoryForm.category')}
+              </label>
               <select
                 className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 {...register('category')}
               >
-                <option value="">— None —</option>
+                <option value="">{t('inventoryForm.categoryNone')}</option>
                 {INVENTORY_CATEGORIES.map((c) => (
                   <option key={c} value={c}>
                     {c}
@@ -143,13 +169,15 @@ export function InventoryForm({
                   className="rounded"
                   {...register('isPublic')}
                 />
-                Public inventory
+                {t('inventoryForm.isPublic')}
               </label>
             </div>
           </div>
 
           <div>
-            <label className="text-sm font-medium mb-1 block">Tags</label>
+            <label className="text-sm font-medium mb-1 block">
+              {t('inventoryForm.tags')}
+            </label>
             <TagsInput value={tags} onChange={setTags} />
           </div>
         </div>
@@ -167,7 +195,7 @@ export function InventoryForm({
         <div className="flex justify-end pt-2">
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            {submitLabel}
+            {submitLabel ?? t('common.save')}
           </Button>
         </div>
       </form>

@@ -6,12 +6,14 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
+  NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
-import { AuthGuard } from '@/auth/guards/auth.guard';
-import { AdminGuard } from '@/auth/guards/admin.guard';
+import { AuthGuard } from '@/shared/guards/auth.guard';
+import { AdminGuard } from '@/shared/guards/admin.guard';
 import { CurrentUser } from '@/auth/decorators/user.decorator';
 import type { User } from '@/generated/prisma/client';
 
@@ -25,7 +27,15 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  // /me routes MUST be above /:id to prevent "me" being parsed as an id
+  @UseGuards(AuthGuard)
+  @Get('search')
+  async findByUsername(@Query('username') username: string) {
+    if (!username) throw new NotFoundException('Username is required');
+    const user = await this.usersService.findByUsername(username);
+    if (!user) throw new NotFoundException('User not found');
+    return { id: user.id, username: user.username };
+  }
+
   @UseGuards(AuthGuard)
   @Get('me')
   async getCurrentUser(@CurrentUser() user: User) {

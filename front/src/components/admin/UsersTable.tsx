@@ -5,6 +5,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { Ban, Check, Shield, ShieldOff, Trash2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { User } from '@/lib/types'
 import {
   Table,
@@ -25,6 +26,7 @@ import { useAuthStore } from '@/store/auth.store'
 const columnHelper = createColumnHelper<User>()
 
 export function UsersTable() {
+  const { t } = useTranslation()
   const { data: users = [], isLoading } = useAllUsers()
   const { user: currentUser } = useAuthStore()
 
@@ -48,11 +50,11 @@ export function UsersTable() {
         size: 40,
       }),
       columnHelper.accessor('username', {
-        header: 'Username',
+        header: t('admin.colUsername'),
         cell: (info) => <span className="font-medium">{info.getValue()}</span>,
       }),
       columnHelper.accessor('email', {
-        header: 'Email',
+        header: t('admin.colEmail'),
         cell: (info) => (
           <span className="text-sm text-muted-foreground">
             {info.getValue()}
@@ -60,31 +62,31 @@ export function UsersTable() {
         ),
       }),
       columnHelper.accessor('isAdmin', {
-        header: 'Admin',
+        header: t('admin.colRole'),
         cell: (info) =>
           info.getValue() ? (
             <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-              <Shield className="w-3 h-3" /> Admin
+              <Shield className="w-3 h-3" /> {t('admin.colRole')}
             </span>
           ) : (
-            <span className="text-xs text-muted-foreground">User</span>
+            <span className="text-xs text-muted-foreground">{t('admin.colRoleUser')}</span>
           ),
       }),
       columnHelper.accessor('isBlocked', {
-        header: 'Status',
+        header: t('admin.colStatus'),
         cell: (info) =>
           info.getValue() ? (
             <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-destructive/10 text-destructive">
-              <Ban className="w-3 h-3" /> Blocked
+              <Ban className="w-3 h-3" /> {t('admin.colStatusBlocked')}
             </span>
           ) : (
             <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-600">
-              <Check className="w-3 h-3" /> Active
+              <Check className="w-3 h-3" /> {t('admin.colStatusActive')}
             </span>
           ),
       }),
       columnHelper.accessor('createdAt', {
-        header: 'Joined',
+        header: t('admin.colJoined'),
         cell: (info) => (
           <span className="text-xs text-muted-foreground">
             {new Date(info.getValue()).toLocaleDateString()}
@@ -93,7 +95,7 @@ export function UsersTable() {
       }),
       columnHelper.display({
         id: 'actions',
-        header: 'Actions',
+        header: t('admin.colActions'),
         cell: ({ row }) => (
           <UserActions user={row.original} currentUserId={currentUser?.id} />
         ),
@@ -153,6 +155,7 @@ function UserActions({
   user: User
   currentUserId?: string
 }) {
+  const { t } = useTranslation()
   const { mutate: update, isPending: isUpdating } = useUpdateUserAdmin(user.id)
   const { mutate: remove, isPending: isRemoving } = useDeleteUser()
 
@@ -166,7 +169,7 @@ function UserActions({
         disabled={isUpdating || isSelf}
         onClick={() => update({ isAdmin: !user.isAdmin })}
         className="h-7 px-2 text-xs"
-        title={user.isAdmin ? 'Remove admin' : 'Make admin'}
+        title={user.isAdmin ? t('admin.removeAdmin') : t('admin.makeAdmin')}
       >
         {user.isAdmin ? (
           <ShieldOff className="w-3.5 h-3.5" />
@@ -181,7 +184,7 @@ function UserActions({
         disabled={isUpdating || isSelf}
         onClick={() => update({ isBlocked: !user.isBlocked })}
         className={`h-7 px-2 text-xs ${user.isBlocked ? 'text-green-600' : 'text-orange-500'}`}
-        title={user.isBlocked ? 'Unblock' : 'Block'}
+        title={user.isBlocked ? t('admin.unblock') : t('admin.block')}
       >
         {user.isBlocked ? (
           <Check className="w-3.5 h-3.5" />
@@ -195,11 +198,11 @@ function UserActions({
         size="sm"
         disabled={isRemoving || isSelf}
         onClick={() => {
-          if (!confirm(`Delete user "${user.username}"?`)) return
+          if (!confirm(t('admin.deleteConfirm', { username: user.username }))) return
           remove(user.id)
         }}
         className="h-7 px-2 text-xs text-destructive"
-        title="Delete user"
+        title={t('admin.deleteUser')}
       >
         <Trash2 className="w-3.5 h-3.5" />
       </Button>

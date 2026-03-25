@@ -1,7 +1,7 @@
 import { useFormContext } from 'react-hook-form'
-import { Input } from '@/components/ui/input'
 import type { InventoryField } from '@/lib/types'
 import type { ItemFormValues } from './ItemForm'
+import { Input } from '@/components/ui/input'
 
 interface ItemFieldInputProps {
   field: InventoryField
@@ -11,7 +11,7 @@ interface ItemFieldInputProps {
 export function ItemFieldInput({ field, index }: ItemFieldInputProps) {
   const { register } = useFormContext<ItemFormValues>()
 
-  const base = `fieldValues.${index}`
+  const base = `fieldValues.${index}` as const
 
   return (
     <div className="space-y-1">

@@ -79,14 +79,11 @@ export class CustomIdService {
     inventoryId: string,
     format: string,
   ): Promise<string> {
-    // Берём максимальный sequence среди существующих items
-    // Это упрощённо — в проде нужна транзакция с блокировкой
     const items = await this.prisma.item.findMany({
       where: { inventoryId },
       select: { customId: true },
     });
 
-    // Парсим числа из существующих ID (грубо)
     let max = 0;
     for (const item of items) {
       const num = parseInt(item.customId ?? '0');

@@ -4,7 +4,7 @@ import type { Comment } from '@/lib/types'
 export const commentsApi = {
   getForInventory: (inventoryId: string) =>
     apiClient
-      .get<Comment[]>('/comments', { params: { inventoryId } })
+      .get<Array<Comment>>('/comments', { params: { inventoryId } })
       .then((r) => r.data),
 
   create: (inventoryId: string, content: string) =>

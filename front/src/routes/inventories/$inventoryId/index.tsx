@@ -1,10 +1,13 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { Pencil, Trash2, Globe, Lock, Package } from 'lucide-react'
+import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useState } from 'react'
+import { Copy, Globe, Key, Lock, Package, Pencil, RefreshCw, Trash2, Users } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { ItemsTable } from '@/components/items/ItemsTable'
 import { CommentsList } from '@/components/comments/CommentsList'
-import { useInventory, useDeleteInventory } from '@/hooks/useInventories'
+import { AccessManager } from '@/components/inventories/AccessManager'
+import { useDeleteInventory, useGenerateApiToken, useInventory } from '@/hooks/useInventories'
 import { useAuthStore } from '@/store/auth.store'
 
 export const Route = createFileRoute('/inventories/$inventoryId/')({
@@ -12,14 +15,27 @@ export const Route = createFileRoute('/inventories/$inventoryId/')({
 })
 
 function InventoryDetailPage() {
+  const { t } = useTranslation()
   const { inventoryId } = Route.useParams()
   const { data: inventory, isLoading } = useInventory(inventoryId)
   const { mutate: remove, isPending: isDeleting } = useDeleteInventory()
   const { user } = useAuthStore()
   const navigate = useNavigate()
+  const [showAccess, setShowAccess] = useState(false)
 
-  const canManage =
-    user?.isAdmin || (user && inventory && inventory.creatorId === user.id)
+  const { mutate: generateToken, isPending: isGeneratingToken } = useGenerateApiToken(inventoryId)
+  const [tokenCopied, setTokenCopied] = useState(false)
+
+  const isOwner = !!(user && inventory && inventory.creatorId === user.id)
+  const hasAccess = !!(user && inventory?.accessUsers?.some((a) => a.userId === user.id))
+  const canManage = user?.isAdmin || isOwner || hasAccess
+
+  const handleCopyToken = () => {
+    if (!inventory?.apiToken) return
+    navigator.clipboard.writeText(inventory.apiToken)
+    setTokenCopied(true)
+    setTimeout(() => setTokenCopied(false), 2000)
+  }
 
   const handleDelete = () => {
     if (!inventory) return
@@ -46,7 +62,7 @@ function InventoryDetailPage() {
       <PageLayout>
         <div className="flex flex-col items-center justify-center py-24 text-muted-foreground">
           <Package className="w-12 h-12 mb-4 opacity-30" />
-          <p className="text-sm">Inventory not found or access denied</p>
+          <p className="text-sm">{t('inventory.notFound')}</p>
         </div>
       </PageLayout>
     )
@@ -66,7 +82,9 @@ function InventoryDetailPage() {
             )}
           </div>
           {inventory.description && (
-            <p className="text-muted-foreground text-sm">{inventory.description}</p>
+            <p className="text-muted-foreground text-sm">
+              {inventory.description}
+            </p>
           )}
           <div className="flex items-center gap-2 mt-2">
             {inventory.category && (
@@ -87,13 +105,23 @@ function InventoryDetailPage() {
 
         {canManage && (
           <div className="flex gap-2 ml-4 shrink-0">
+            {isOwner && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowAccess((v) => !v)}
+              >
+                <Users className="w-4 h-4 mr-1" />
+                {t('inventory.share')}
+              </Button>
+            )}
             <Link
               to="/inventories/$inventoryId/edit"
               params={{ inventoryId: inventory.id }}
             >
               <Button variant="outline" size="sm">
                 <Pencil className="w-4 h-4 mr-1" />
-                Edit
+                {t('common.edit')}
               </Button>
             </Link>
             <Button
@@ -104,17 +132,27 @@ function InventoryDetailPage() {
               className="text-destructive hover:text-destructive"
             >
               <Trash2 className="w-4 h-4 mr-1" />
-              Delete
+              {t('common.delete')}
             </Button>
           </div>
         )}
       </div>
 
+      {/* Access manager */}
+      {showAccess && (
+        <div className="mb-6 p-4 border border-border rounded-xl bg-muted/30">
+          <p className="text-xs text-muted-foreground mb-3 font-medium uppercase tracking-wide">
+            {t('inventory.sharedAccess')}
+          </p>
+          <AccessManager inventoryId={inventory.id} />
+        </div>
+      )}
+
       {/* Fields info */}
       {inventory.fields && inventory.fields.length > 0 && (
         <div className="mb-6 p-4 border border-border rounded-xl bg-muted/30">
           <p className="text-xs text-muted-foreground mb-2 font-medium uppercase tracking-wide">
-            Fields
+            {t('inventory.fields')}
           </p>
           <div className="flex flex-wrap gap-2">
             {inventory.fields.map((field) => (
@@ -129,8 +167,48 @@ function InventoryDetailPage() {
         </div>
       )}
 
+      {/* API Token section */}
+      {isOwner && (
+        <div className="mb-6 p-4 border border-border rounded-xl bg-muted/30">
+          <p className="text-xs text-muted-foreground mb-3 font-medium uppercase tracking-wide">
+            API Token
+          </p>
+          {inventory.apiToken ? (
+            <div className="flex items-center gap-2">
+              <code className="flex-1 text-xs bg-background border border-border rounded px-3 py-2 font-mono truncate text-muted-foreground">
+                {inventory.apiToken}
+              </code>
+              <button
+                onClick={handleCopyToken}
+                title={tokenCopied ? t('inventory.apiTokenCopied') : t('inventory.apiTokenCopy')}
+                className="p-2 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-foreground shrink-0"
+              >
+                <Copy className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => generateToken()}
+                disabled={isGeneratingToken}
+                title={t('inventory.apiTokenRegenerate')}
+                className="p-2 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-foreground shrink-0 disabled:opacity-50"
+              >
+                <RefreshCw className={`w-4 h-4 ${isGeneratingToken ? 'animate-spin' : ''}`} />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => generateToken()}
+              disabled={isGeneratingToken}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5 disabled:opacity-50"
+            >
+              <Key className="w-3.5 h-3.5" />
+              {t('inventory.apiTokenGenerate')}
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Items section */}
-      <h2 className="text-lg font-semibold mb-4">Items</h2>
+      <h2 className="text-lg font-semibold mb-4">{t('inventory.items')}</h2>
       <ItemsTable
         inventoryId={inventory.id}
         fields={inventory.fields ?? []}

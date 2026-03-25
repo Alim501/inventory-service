@@ -1,9 +1,6 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  itemsApi,
-  type CreateItemPayload,
-  type UpdateItemPayload,
-} from '@/api/items'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import type { CreateItemPayload, UpdateItemPayload } from '@/api/items'
+import { itemsApi } from '@/api/items'
 
 export const itemKeys = {
   all: (inventoryId: string) => ['items', inventoryId] as const,
@@ -62,7 +59,8 @@ export function useDeleteItem(inventoryId: string) {
 export function useBulkDeleteItems(inventoryId: string) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (itemIds: string[]) => itemsApi.bulkRemove(inventoryId, itemIds),
+    mutationFn: (itemIds: Array<string>) =>
+      itemsApi.bulkRemove(inventoryId, itemIds),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: itemKeys.all(inventoryId) })
     },

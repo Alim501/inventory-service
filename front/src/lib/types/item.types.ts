@@ -19,7 +19,7 @@ export interface Item {
   createdAt: string
   updatedAt: string
   creator?: Pick<User, 'id' | 'username' | 'avatarUrl'>
-  fieldValues?: ItemFieldValue[]
+  fieldValues?: Array<ItemFieldValue>
   _count?: {
     likes: number
   }

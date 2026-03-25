@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { useCreateComment } from '@/hooks/useComments'
 
@@ -8,6 +9,7 @@ interface CommentFormProps {
 }
 
 export function CommentForm({ inventoryId }: CommentFormProps) {
+  const { t } = useTranslation()
   const [content, setContent] = useState('')
   const { mutate: create, isPending } = useCreateComment(inventoryId)
 
@@ -22,13 +24,13 @@ export function CommentForm({ inventoryId }: CommentFormProps) {
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        placeholder="Write a comment... (Markdown supported)"
+        placeholder={t('comments.placeholder')}
         className="w-full min-h-[80px] rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
       />
       <div className="flex justify-end">
         <Button type="submit" size="sm" disabled={isPending || !content.trim()}>
           {isPending && <Loader2 className="w-3 h-3 mr-1 animate-spin" />}
-          Post Comment
+          {t('comments.post')}
         </Button>
       </div>
     </form>

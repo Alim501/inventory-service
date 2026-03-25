@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { Pencil, ArrowLeft } from 'lucide-react'
+import { Link, createFileRoute } from '@tanstack/react-router'
+import { ArrowLeft, Pencil } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import type { CreateItemPayload } from '@/api/items'
 import { Button } from '@/components/ui/button'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { ItemForm } from '@/components/items/ItemForm'
@@ -9,13 +11,13 @@ import { useInventory } from '@/hooks/useInventories'
 import { useItem, useUpdateItem } from '@/hooks/useItems'
 import { useAuthStore } from '@/store/auth.store'
 import { FIELD_TYPE_LABELS } from '@/lib/constants'
-import type { UpdateItemPayload } from '@/api/items'
 
-export const Route = createFileRoute(
-  '/inventories/$inventoryId/items/$itemId',
-)({ component: ItemDetailPage })
+export const Route = createFileRoute('/inventories/$inventoryId/items/$itemId')(
+  { component: ItemDetailPage },
+)
 
 function ItemDetailPage() {
+  const { t } = useTranslation()
   const { inventoryId, itemId } = Route.useParams()
   const { user } = useAuthStore()
   const { data: inventory } = useInventory(inventoryId)
@@ -26,7 +28,7 @@ function ItemDetailPage() {
   const canManage =
     user?.isAdmin || (user && item && item.creatorId === user.id)
 
-  const handleUpdate = (data: UpdateItemPayload) => {
+  const handleUpdate = (data: CreateItemPayload) => {
     if (!item) return
     update(
       { ...data, version: item.version },
@@ -71,7 +73,7 @@ function ItemDetailPage() {
               onClick={() => setEditing(true)}
             >
               <Pencil className="w-3.5 h-3.5 mr-1" />
-              Edit
+              {t('common.edit')}
             </Button>
           )}
         </div>
@@ -81,10 +83,10 @@ function ItemDetailPage() {
         <ItemForm
           fields={inventory.fields ?? []}
           defaultValues={item}
-          hasCustomIdFormat={!!inventory.customIdFormat?.elements?.length}
+          hasCustomIdFormat={!!inventory.customIdFormat?.elements.length}
           onSubmit={handleUpdate}
           isLoading={isPending}
-          submitLabel="Save Changes"
+          submitLabel={t('common.save')}
         />
       ) : (
         <div className="space-y-4">
@@ -102,9 +104,13 @@ function ItemDetailPage() {
                 </p>
                 <div className="text-sm">
                   {field.fieldType === 'boolean' ? (
-                    fv.booleanValue ? '✓ Yes' : '✗ No'
+                    fv.booleanValue ? (
+                      `✓ ${t('items.yes')}`
+                    ) : (
+                      `✗ ${t('items.yes')}`
+                    )
                   ) : field.fieldType === 'number' ? (
-                    fv.numericValue ?? '—'
+                    (fv.numericValue ?? '—')
                   ) : field.fieldType === 'image' && fv.textValue ? (
                     <img
                       src={fv.textValue}
@@ -120,7 +126,9 @@ function ItemDetailPage() {
           })}
 
           {(!item.fieldValues || item.fieldValues.length === 0) && (
-            <p className="text-sm text-muted-foreground">No field values.</p>
+            <p className="text-sm text-muted-foreground">
+              {t('items.noFieldValues')}
+            </p>
           )}
         </div>
       )}

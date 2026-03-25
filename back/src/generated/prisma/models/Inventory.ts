@@ -43,6 +43,7 @@ export type InventoryMinAggregateOutputType = {
   imageUrl: string | null
   isPublic: boolean | null
   version: number | null
+  apiToken: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -56,6 +57,7 @@ export type InventoryMaxAggregateOutputType = {
   imageUrl: string | null
   isPublic: boolean | null
   version: number | null
+  apiToken: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -70,6 +72,7 @@ export type InventoryCountAggregateOutputType = {
   isPublic: number
   customIdFormat: number
   version: number
+  apiToken: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -93,6 +96,7 @@ export type InventoryMinAggregateInputType = {
   imageUrl?: true
   isPublic?: true
   version?: true
+  apiToken?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -106,6 +110,7 @@ export type InventoryMaxAggregateInputType = {
   imageUrl?: true
   isPublic?: true
   version?: true
+  apiToken?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -120,6 +125,7 @@ export type InventoryCountAggregateInputType = {
   isPublic?: true
   customIdFormat?: true
   version?: true
+  apiToken?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -221,6 +227,7 @@ export type InventoryGroupByOutputType = {
   isPublic: boolean
   customIdFormat: runtime.JsonValue | null
   version: number
+  apiToken: string | null
   createdAt: Date
   updatedAt: Date
   _count: InventoryCountAggregateOutputType | null
@@ -258,6 +265,7 @@ export type InventoryWhereInput = {
   isPublic?: Prisma.BoolFilter<"Inventory"> | boolean
   customIdFormat?: Prisma.JsonNullableFilter<"Inventory">
   version?: Prisma.IntFilter<"Inventory"> | number
+  apiToken?: Prisma.StringNullableFilter<"Inventory"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Inventory"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Inventory"> | Date | string
   creator?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -278,6 +286,7 @@ export type InventoryOrderByWithRelationInput = {
   isPublic?: Prisma.SortOrder
   customIdFormat?: Prisma.SortOrderInput | Prisma.SortOrder
   version?: Prisma.SortOrder
+  apiToken?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   creator?: Prisma.UserOrderByWithRelationInput
@@ -290,6 +299,7 @@ export type InventoryOrderByWithRelationInput = {
 
 export type InventoryWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  apiToken?: string
   AND?: Prisma.InventoryWhereInput | Prisma.InventoryWhereInput[]
   OR?: Prisma.InventoryWhereInput[]
   NOT?: Prisma.InventoryWhereInput | Prisma.InventoryWhereInput[]
@@ -309,7 +319,7 @@ export type InventoryWhereUniqueInput = Prisma.AtLeast<{
   comments?: Prisma.CommentListRelationFilter
   tags?: Prisma.InventoryTagListRelationFilter
   accessUsers?: Prisma.InventoryAccessListRelationFilter
-}, "id">
+}, "id" | "apiToken">
 
 export type InventoryOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -321,6 +331,7 @@ export type InventoryOrderByWithAggregationInput = {
   isPublic?: Prisma.SortOrder
   customIdFormat?: Prisma.SortOrderInput | Prisma.SortOrder
   version?: Prisma.SortOrder
+  apiToken?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.InventoryCountOrderByAggregateInput
@@ -343,6 +354,7 @@ export type InventoryScalarWhereWithAggregatesInput = {
   isPublic?: Prisma.BoolWithAggregatesFilter<"Inventory"> | boolean
   customIdFormat?: Prisma.JsonNullableWithAggregatesFilter<"Inventory">
   version?: Prisma.IntWithAggregatesFilter<"Inventory"> | number
+  apiToken?: Prisma.StringNullableWithAggregatesFilter<"Inventory"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Inventory"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Inventory"> | Date | string
 }
@@ -356,6 +368,7 @@ export type InventoryCreateInput = {
   isPublic?: boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: number
+  apiToken?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   creator?: Prisma.UserCreateNestedOneWithoutInventoriesInput
@@ -376,6 +389,7 @@ export type InventoryUncheckedCreateInput = {
   isPublic?: boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: number
+  apiToken?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   fields?: Prisma.InventoryFieldUncheckedCreateNestedManyWithoutInventoryInput
@@ -394,6 +408,7 @@ export type InventoryUpdateInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  apiToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creator?: Prisma.UserUpdateOneWithoutInventoriesNestedInput
@@ -414,6 +429,7 @@ export type InventoryUncheckedUpdateInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  apiToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fields?: Prisma.InventoryFieldUncheckedUpdateManyWithoutInventoryNestedInput
@@ -433,6 +449,7 @@ export type InventoryCreateManyInput = {
   isPublic?: boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: number
+  apiToken?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -446,6 +463,7 @@ export type InventoryUpdateManyMutationInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  apiToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -460,6 +478,7 @@ export type InventoryUncheckedUpdateManyInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  apiToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -484,6 +503,7 @@ export type InventoryCountOrderByAggregateInput = {
   isPublic?: Prisma.SortOrder
   customIdFormat?: Prisma.SortOrder
   version?: Prisma.SortOrder
+  apiToken?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -501,6 +521,7 @@ export type InventoryMaxOrderByAggregateInput = {
   imageUrl?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   version?: Prisma.SortOrder
+  apiToken?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -514,6 +535,7 @@ export type InventoryMinOrderByAggregateInput = {
   imageUrl?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   version?: Prisma.SortOrder
+  apiToken?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -656,6 +678,7 @@ export type InventoryCreateWithoutCreatorInput = {
   isPublic?: boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: number
+  apiToken?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   fields?: Prisma.InventoryFieldCreateNestedManyWithoutInventoryInput
@@ -674,6 +697,7 @@ export type InventoryUncheckedCreateWithoutCreatorInput = {
   isPublic?: boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: number
+  apiToken?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   fields?: Prisma.InventoryFieldUncheckedCreateNestedManyWithoutInventoryInput
@@ -722,6 +746,7 @@ export type InventoryScalarWhereInput = {
   isPublic?: Prisma.BoolFilter<"Inventory"> | boolean
   customIdFormat?: Prisma.JsonNullableFilter<"Inventory">
   version?: Prisma.IntFilter<"Inventory"> | number
+  apiToken?: Prisma.StringNullableFilter<"Inventory"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Inventory"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Inventory"> | Date | string
 }
@@ -735,6 +760,7 @@ export type InventoryCreateWithoutFieldsInput = {
   isPublic?: boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: number
+  apiToken?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   creator?: Prisma.UserCreateNestedOneWithoutInventoriesInput
@@ -754,6 +780,7 @@ export type InventoryUncheckedCreateWithoutFieldsInput = {
   isPublic?: boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: number
+  apiToken?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutInventoryInput
@@ -787,6 +814,7 @@ export type InventoryUpdateWithoutFieldsInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  apiToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creator?: Prisma.UserUpdateOneWithoutInventoriesNestedInput
@@ -806,6 +834,7 @@ export type InventoryUncheckedUpdateWithoutFieldsInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  apiToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ItemUncheckedUpdateManyWithoutInventoryNestedInput
@@ -823,6 +852,7 @@ export type InventoryCreateWithoutItemsInput = {
   isPublic?: boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: number
+  apiToken?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   creator?: Prisma.UserCreateNestedOneWithoutInventoriesInput
@@ -842,6 +872,7 @@ export type InventoryUncheckedCreateWithoutItemsInput = {
   isPublic?: boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: number
+  apiToken?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   fields?: Prisma.InventoryFieldUncheckedCreateNestedManyWithoutInventoryInput
@@ -875,6 +906,7 @@ export type InventoryUpdateWithoutItemsInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  apiToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creator?: Prisma.UserUpdateOneWithoutInventoriesNestedInput
@@ -894,6 +926,7 @@ export type InventoryUncheckedUpdateWithoutItemsInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  apiToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fields?: Prisma.InventoryFieldUncheckedUpdateManyWithoutInventoryNestedInput
@@ -911,6 +944,7 @@ export type InventoryCreateWithoutAccessUsersInput = {
   isPublic?: boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: number
+  apiToken?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   creator?: Prisma.UserCreateNestedOneWithoutInventoriesInput
@@ -930,6 +964,7 @@ export type InventoryUncheckedCreateWithoutAccessUsersInput = {
   isPublic?: boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: number
+  apiToken?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   fields?: Prisma.InventoryFieldUncheckedCreateNestedManyWithoutInventoryInput
@@ -963,6 +998,7 @@ export type InventoryUpdateWithoutAccessUsersInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  apiToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creator?: Prisma.UserUpdateOneWithoutInventoriesNestedInput
@@ -982,6 +1018,7 @@ export type InventoryUncheckedUpdateWithoutAccessUsersInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  apiToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fields?: Prisma.InventoryFieldUncheckedUpdateManyWithoutInventoryNestedInput
@@ -999,6 +1036,7 @@ export type InventoryCreateWithoutCommentsInput = {
   isPublic?: boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: number
+  apiToken?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   creator?: Prisma.UserCreateNestedOneWithoutInventoriesInput
@@ -1018,6 +1056,7 @@ export type InventoryUncheckedCreateWithoutCommentsInput = {
   isPublic?: boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: number
+  apiToken?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   fields?: Prisma.InventoryFieldUncheckedCreateNestedManyWithoutInventoryInput
@@ -1051,6 +1090,7 @@ export type InventoryUpdateWithoutCommentsInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  apiToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creator?: Prisma.UserUpdateOneWithoutInventoriesNestedInput
@@ -1070,6 +1110,7 @@ export type InventoryUncheckedUpdateWithoutCommentsInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  apiToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fields?: Prisma.InventoryFieldUncheckedUpdateManyWithoutInventoryNestedInput
@@ -1087,6 +1128,7 @@ export type InventoryCreateWithoutTagsInput = {
   isPublic?: boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: number
+  apiToken?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   creator?: Prisma.UserCreateNestedOneWithoutInventoriesInput
@@ -1106,6 +1148,7 @@ export type InventoryUncheckedCreateWithoutTagsInput = {
   isPublic?: boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: number
+  apiToken?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   fields?: Prisma.InventoryFieldUncheckedCreateNestedManyWithoutInventoryInput
@@ -1139,6 +1182,7 @@ export type InventoryUpdateWithoutTagsInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  apiToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creator?: Prisma.UserUpdateOneWithoutInventoriesNestedInput
@@ -1158,6 +1202,7 @@ export type InventoryUncheckedUpdateWithoutTagsInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  apiToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fields?: Prisma.InventoryFieldUncheckedUpdateManyWithoutInventoryNestedInput
@@ -1175,6 +1220,7 @@ export type InventoryCreateManyCreatorInput = {
   isPublic?: boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: number
+  apiToken?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1188,6 +1234,7 @@ export type InventoryUpdateWithoutCreatorInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  apiToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fields?: Prisma.InventoryFieldUpdateManyWithoutInventoryNestedInput
@@ -1206,6 +1253,7 @@ export type InventoryUncheckedUpdateWithoutCreatorInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  apiToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fields?: Prisma.InventoryFieldUncheckedUpdateManyWithoutInventoryNestedInput
@@ -1224,6 +1272,7 @@ export type InventoryUncheckedUpdateManyWithoutCreatorInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customIdFormat?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  apiToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1305,6 +1354,7 @@ export type InventorySelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   isPublic?: boolean
   customIdFormat?: boolean
   version?: boolean
+  apiToken?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   creator?: boolean | Prisma.Inventory$creatorArgs<ExtArgs>
@@ -1326,6 +1376,7 @@ export type InventorySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   isPublic?: boolean
   customIdFormat?: boolean
   version?: boolean
+  apiToken?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   creator?: boolean | Prisma.Inventory$creatorArgs<ExtArgs>
@@ -1341,6 +1392,7 @@ export type InventorySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   isPublic?: boolean
   customIdFormat?: boolean
   version?: boolean
+  apiToken?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   creator?: boolean | Prisma.Inventory$creatorArgs<ExtArgs>
@@ -1356,11 +1408,12 @@ export type InventorySelectScalar = {
   isPublic?: boolean
   customIdFormat?: boolean
   version?: boolean
+  apiToken?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type InventoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "creatorId" | "title" | "description" | "category" | "imageUrl" | "isPublic" | "customIdFormat" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["inventory"]>
+export type InventoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "creatorId" | "title" | "description" | "category" | "imageUrl" | "isPublic" | "customIdFormat" | "version" | "apiToken" | "createdAt" | "updatedAt", ExtArgs["result"]["inventory"]>
 export type InventoryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   creator?: boolean | Prisma.Inventory$creatorArgs<ExtArgs>
   fields?: boolean | Prisma.Inventory$fieldsArgs<ExtArgs>
@@ -1397,6 +1450,7 @@ export type $InventoryPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     isPublic: boolean
     customIdFormat: runtime.JsonValue | null
     version: number
+    apiToken: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["inventory"]>
@@ -1837,6 +1891,7 @@ export interface InventoryFieldRefs {
   readonly isPublic: Prisma.FieldRef<"Inventory", 'Boolean'>
   readonly customIdFormat: Prisma.FieldRef<"Inventory", 'Json'>
   readonly version: Prisma.FieldRef<"Inventory", 'Int'>
+  readonly apiToken: Prisma.FieldRef<"Inventory", 'String'>
   readonly createdAt: Prisma.FieldRef<"Inventory", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Inventory", 'DateTime'>
 }

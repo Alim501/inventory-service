@@ -1,12 +1,17 @@
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import {
-  useReactTable,
-  getCoreRowModel,
-  flexRender,
   createColumnHelper,
-  type ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
 } from '@tanstack/react-table'
+import { ItemsToolbar } from './ItemsToolbar'
+import { LikeButton } from './LikeButton'
+import type { ColumnDef } from '@tanstack/react-table'
+import type { InventoryField, Item } from '@/lib/types'
+import { useBulkDeleteItems, useItems } from '@/hooks/useItems'
 import {
   Table,
   TableBody,
@@ -15,30 +20,31 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { ItemsToolbar } from './ItemsToolbar'
-import { LikeButton } from './LikeButton'
-import { useItems, useBulkDeleteItems } from '@/hooks/useItems'
-import type { Item, InventoryField } from '@/lib/types'
 
 const columnHelper = createColumnHelper<Item>()
 
 interface ItemsTableProps {
   inventoryId: string
-  fields: InventoryField[]
+  fields: Array<InventoryField>
   canManage: boolean
 }
 
-export function ItemsTable({ inventoryId, fields, canManage }: ItemsTableProps) {
+export function ItemsTable({
+  inventoryId,
+  fields,
+  canManage,
+}: ItemsTableProps) {
+  const { t } = useTranslation()
   const { data: items = [], isLoading } = useItems(inventoryId)
-  const { mutate: bulkDelete, isPending: isDeleting } = useBulkDeleteItems(inventoryId)
+  const { mutate: bulkDelete, isPending: isDeleting } =
+    useBulkDeleteItems(inventoryId)
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({})
 
   const visibleFields = fields.filter((f) => f.showInTable)
 
-  const columns = useMemo<ColumnDef<Item, any>[]>(() => {
-    const cols: ColumnDef<Item, any>[] = []
+  const columns = useMemo<Array<ColumnDef<Item, any>>>(() => {
+    const cols: Array<ColumnDef<Item, any>> = []
 
-    // Checkbox column (only if can manage)
     if (canManage) {
       cols.push(
         columnHelper.display({
@@ -65,10 +71,9 @@ export function ItemsTable({ inventoryId, fields, canManage }: ItemsTableProps) 
       )
     }
 
-    // Custom ID column
     cols.push(
       columnHelper.accessor('customId', {
-        header: 'ID',
+        header: t('items.id'),
         cell: (info) => (
           <Link
             to="/inventories/$inventoryId/items/$itemId"
@@ -81,7 +86,6 @@ export function ItemsTable({ inventoryId, fields, canManage }: ItemsTableProps) 
       }),
     )
 
-    // Dynamic field columns
     for (const field of visibleFields) {
       cols.push(
         columnHelper.display({
@@ -118,10 +122,9 @@ export function ItemsTable({ inventoryId, fields, canManage }: ItemsTableProps) 
       )
     }
 
-    // Creator column
     cols.push(
       columnHelper.accessor('creator', {
-        header: 'Added by',
+        header: t('items.addedBy'),
         cell: (info) => (
           <span className="text-sm text-muted-foreground">
             {info.getValue()?.username ?? '—'}
@@ -130,7 +133,6 @@ export function ItemsTable({ inventoryId, fields, canManage }: ItemsTableProps) 
       }),
     )
 
-    // Likes column
     cols.push(
       columnHelper.display({
         id: 'likes',
@@ -191,7 +193,7 @@ export function ItemsTable({ inventoryId, fields, canManage }: ItemsTableProps) 
 
       {items.length === 0 ? (
         <div className="flex items-center justify-center py-16 text-muted-foreground text-sm border border-dashed border-border rounded-xl">
-          No items yet
+          {t('items.noItems')}
         </div>
       ) : (
         <div className="rounded-xl border border-border overflow-hidden">

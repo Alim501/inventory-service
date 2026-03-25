@@ -12,7 +12,7 @@ import {
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { AuthGuard } from '@/auth/guards/auth.guard';
+import { AuthGuard } from '@/shared/guards/auth.guard';
 import { CurrentUser } from '@/auth/decorators/user.decorator';
 import type { User } from '@/generated/prisma/client';
 
@@ -29,8 +29,6 @@ export class CommentsController {
     return this.commentsService.create(createCommentDto, user);
   }
 
-  // GET /comments?inventoryId=xxx  →  public comments for inventory
-  // GET /comments                   →  admin: all comments
   @Get()
   findAll(@Query('inventoryId') inventoryId?: string) {
     if (inventoryId) {

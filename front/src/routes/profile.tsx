@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { Loader2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { PageLayout } from '@/components/layout/PageLayout'
@@ -11,26 +12,27 @@ export const Route = createFileRoute('/profile')({ component: ProfilePage })
 
 interface ProfileForm {
   username: string
-  preferredLanguage: 'en' | 'ru'
-  preferredTheme: 'light' | 'dark'
+  email: string
 }
 
 function ProfilePage() {
+  const { t } = useTranslation()
   const { user } = useAuthStore()
   const { mutate: update, isPending, isSuccess } = useUpdateProfile()
 
   const { register, handleSubmit } = useForm<ProfileForm>({
     defaultValues: {
       username: user?.username ?? '',
-      preferredLanguage: (user?.preferredLanguage as 'en' | 'ru') ?? 'en',
-      preferredTheme: (user?.preferredTheme as 'light' | 'dark') ?? 'light',
+      email: user?.email ?? '',
     },
   })
 
   if (!user) {
     return (
       <PageLayout className="max-w-md">
-        <p className="text-muted-foreground text-sm">Please sign in.</p>
+        <p className="text-muted-foreground text-sm">
+          {t('profile.pleaseSignIn')}
+        </p>
       </PageLayout>
     )
   }
@@ -46,12 +48,14 @@ function ProfilePage() {
           />
         ) : (
           <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center text-xl font-semibold">
-            {user.username[0]?.toUpperCase()}
+            {user.username[0].toUpperCase()}
           </div>
         )}
         <div>
           <h1 className="text-xl font-bold">{user.username}</h1>
-          <p className="text-sm text-muted-foreground">{user.email}</p>
+          {user.email && (
+            <p className="text-sm text-muted-foreground">{user.email}</p>
+          )}
           {user.isAdmin && (
             <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">
               Admin
@@ -65,39 +69,26 @@ function ProfilePage() {
         className="space-y-4"
       >
         <div>
-          <label className="text-sm font-medium mb-1 block">Username</label>
+          <label className="text-sm font-medium mb-1 block">
+            {t('profile.username')}
+          </label>
           <Input {...register('username')} />
         </div>
 
         <div>
-          <label className="text-sm font-medium mb-1 block">Language</label>
-          <select
-            className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            {...register('preferredLanguage')}
-          >
-            <option value="en">English</option>
-            <option value="ru">Русский</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="text-sm font-medium mb-1 block">Theme</label>
-          <select
-            className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            {...register('preferredTheme')}
-          >
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-          </select>
+          <label className="text-sm font-medium mb-1 block">
+            {t('profile.email')}
+          </label>
+          <Input type="email" {...register('email')} />
         </div>
 
         <div className="flex items-center gap-3 pt-2">
           <Button type="submit" disabled={isPending}>
             {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            Save Changes
+            {t('common.save')}
           </Button>
           {isSuccess && (
-            <span className="text-sm text-green-600">Saved!</span>
+            <span className="text-sm text-green-600">{t('common.saved')}</span>
           )}
         </div>
       </form>

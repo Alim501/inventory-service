@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   UnauthorizedException,
@@ -8,7 +9,11 @@ import * as crypto from 'crypto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { TelegramAuthDto } from './dto/telegram-auth.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 import { UsersService } from '@/users/users.service';
+import { MailService } from '@/mail/mail.service';
+import { PrismaService } from '@/prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
 import { AuthMethod } from './enums/auth-method.enum';
 import type { Profile } from 'passport-google-oauth20';
@@ -18,6 +23,8 @@ export class AuthService {
   constructor(
     private userService: UsersService,
     private jwtService: JwtService,
+    private mailService: MailService,
+    private prisma: PrismaService,
   ) {}
 
   async login(loginDto: LoginDto) {
@@ -46,6 +53,9 @@ export class AuthService {
           username: registerDto.username,
           password: hashedPassword,
         });
+        this.mailService
+          .sendWelcome(registerDto.email!, registerDto.username)
+          .catch(() => null);
         break;
       }
       case AuthMethod.GOOGLE: {
@@ -192,6 +202,48 @@ export class AuthService {
         return user;
       }
     }
+  }
+
+  async forgotPassword(dto: ForgotPasswordDto) {
+    const user = await this.userService.findByEmail(dto.email);
+    if (!user) return { message: 'If the email exists, a reset link was sent' };
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { resetPasswordToken: token, resetPasswordExpires: expires },
+    });
+
+    this.mailService.sendPasswordReset(dto.email, token).catch(() => null);
+    return { message: 'If the email exists, a reset link was sent' };
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    const user = await this.prisma.user.findUnique({
+      where: { resetPasswordToken: dto.token },
+    });
+
+    if (
+      !user ||
+      !user.resetPasswordExpires ||
+      user.resetPasswordExpires < new Date()
+    ) {
+      throw new BadRequestException('Invalid or expired reset token');
+    }
+
+    const hashed = await bcrypt.hash(dto.password, 10);
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashed,
+        resetPasswordToken: null,
+        resetPasswordExpires: null,
+      },
+    });
+
+    return { message: 'Password updated' };
   }
 
   private generateTokens(

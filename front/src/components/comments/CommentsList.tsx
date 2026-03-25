@@ -1,4 +1,5 @@
 import { MessageSquare } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { CommentItem } from './CommentItem'
 import { CommentForm } from './CommentForm'
 import { useComments } from '@/hooks/useComments'
@@ -9,6 +10,7 @@ interface CommentsListProps {
 }
 
 export function CommentsList({ inventoryId }: CommentsListProps) {
+  const { t } = useTranslation()
   const { data: comments = [], isLoading } = useComments(inventoryId)
   const { user } = useAuthStore()
 
@@ -17,7 +19,7 @@ export function CommentsList({ inventoryId }: CommentsListProps) {
       <div className="flex items-center gap-2">
         <MessageSquare className="w-4 h-4" />
         <h3 className="font-semibold">
-          Comments{comments.length > 0 ? ` (${comments.length})` : ''}
+          {t('comments.title')}{comments.length > 0 ? ` (${comments.length})` : ''}
         </h3>
       </div>
 
@@ -39,7 +41,7 @@ export function CommentsList({ inventoryId }: CommentsListProps) {
 
       {!isLoading && comments.length === 0 && (
         <p className="text-sm text-muted-foreground py-4 text-center">
-          {user ? 'Be the first to comment!' : 'No comments yet.'}
+          {user ? t('comments.firstComment') : t('comments.noComments')}
         </p>
       )}
 

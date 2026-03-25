@@ -11,8 +11,8 @@ import {
 import { ItemsService } from './items.service';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
-import { AuthGuard } from '@/auth/guards/auth.guard';
-import { OptionalAuthGuard } from '@/auth/guards/optional-auth.guard';
+import { AuthGuard } from '@/shared/guards/auth.guard';
+import { OptionalAuthGuard } from '@/shared/guards/optional-auth.guard';
 import { CurrentUser } from '@/auth/decorators/user.decorator';
 import type { User } from '@/generated/prisma/client';
 

@@ -10,19 +10,19 @@ export interface CreateItemFieldValuePayload {
 
 export interface CreateItemPayload {
   customId?: string
-  fieldValues?: CreateItemFieldValuePayload[]
+  fieldValues?: Array<CreateItemFieldValuePayload>
 }
 
 export interface UpdateItemPayload {
   version: number
   customId?: string
-  fieldValues?: CreateItemFieldValuePayload[]
+  fieldValues?: Array<CreateItemFieldValuePayload>
 }
 
 export const itemsApi = {
   getAll: (inventoryId: string) =>
     apiClient
-      .get<Item[]>(`/inventories/${inventoryId}/items`)
+      .get<Array<Item>>(`/inventories/${inventoryId}/items`)
       .then((r) => r.data),
 
   getOne: (inventoryId: string, itemId: string) =>
@@ -43,7 +43,7 @@ export const itemsApi = {
   remove: (inventoryId: string, itemId: string) =>
     apiClient.delete(`/inventories/${inventoryId}/items/${itemId}`),
 
-  bulkRemove: (inventoryId: string, itemIds: string[]) =>
+  bulkRemove: (inventoryId: string, itemIds: Array<string>) =>
     apiClient.delete(`/inventories/${inventoryId}/items`, {
       data: { ids: itemIds },
     }),

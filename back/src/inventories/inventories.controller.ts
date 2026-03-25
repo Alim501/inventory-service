@@ -11,11 +11,11 @@ import {
 import { InventoriesService } from './inventories.service';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
-import { AuthGuard } from '@/auth/guards/auth.guard';
+import { AuthGuard } from '@/shared/guards/auth.guard';
 import { CurrentUser } from '@/auth/decorators/user.decorator';
 import type { User } from '@/generated/prisma/client';
-import { AdminGuard } from '@/auth/guards/admin.guard';
-import { OptionalAuthGuard } from '@/auth/guards/optional-auth.guard';
+import { AdminGuard } from '@/shared/guards/admin.guard';
+import { OptionalAuthGuard } from '@/shared/guards/optional-auth.guard';
 
 @Controller('inventories')
 export class InventoriesController {
@@ -61,6 +61,37 @@ export class InventoriesController {
     @CurrentUser() user: User,
   ) {
     return this.inventoriesService.update(id, updateInventoryDto, user);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post(':id/access/:userId')
+  grantAccess(
+    @Param('id') id: string,
+    @Param('userId') userId: string,
+    @CurrentUser() user: User,
+  ) {
+    return this.inventoriesService.grantAccess(id, userId, user);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete(':id/access/:userId')
+  revokeAccess(
+    @Param('id') id: string,
+    @Param('userId') userId: string,
+    @CurrentUser() user: User,
+  ) {
+    return this.inventoriesService.revokeAccess(id, userId, user);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get(':id/access')
+  listAccess(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.inventoriesService.listAccess(id, user);
+  }
+  @Post(':id/api-token')
+  @UseGuards(AuthGuard)
+  generateApiToken(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.inventoriesService.generateApiToken(id, user);
   }
 
   @UseGuards(AuthGuard)

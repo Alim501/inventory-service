@@ -7,7 +7,6 @@ export const apiClient = axios.create({
   withCredentials: true,
 })
 
-// Attach stored access token to every request
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem(TOKEN_KEY)
   if (token) {

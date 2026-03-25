@@ -1,5 +1,6 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { usersApi, type UpdateUserAdminPayload, type UpdateProfilePayload } from '@/api/users'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import type { UpdateProfilePayload, UpdateUserAdminPayload } from '@/api/users'
+import { usersApi } from '@/api/users'
 import { useAuthStore } from '@/store/auth.store'
 
 const userKeys = {
@@ -18,7 +19,8 @@ export function useAllUsers() {
 export function useUpdateUserAdmin(id: string) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (data: UpdateUserAdminPayload) => usersApi.updateAdmin(id, data),
+    mutationFn: (data: UpdateUserAdminPayload) =>
+      usersApi.updateAdmin(id, data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: userKeys.all })
     },

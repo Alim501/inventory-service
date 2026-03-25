@@ -57,6 +57,7 @@ model Inventory {
   isPublic       Boolean  @default(false) @map("is_public")
   customIdFormat Json?    @map("custom_id_format") @db.JsonB
   version        Int      @default(0)
+  apiToken String? @unique @map("api_token") @db.VarChar(255)
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 

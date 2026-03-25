@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
 import { TagsService } from './tags.service';
 import { TagsController } from './tags.controller';
+import { SharedModule } from '@/shared/shared.module';
+import { PrismaModule } from '@/prisma/prisma.module';
 
 @Module({
-  imports: [JwtModule],
+  imports: [SharedModule, PrismaModule],
   controllers: [TagsController],
   providers: [TagsService],
 })

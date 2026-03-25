@@ -1,9 +1,15 @@
-import { createFileRoute, redirect, isRedirect, useNavigate } from '@tanstack/react-router'
+import {
+  createFileRoute,
+  isRedirect,
+  redirect,
+  useNavigate,
+} from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import type { TelegramAuthData } from '@/api/auth'
 import { authApi } from '@/api/auth'
 import { TOKEN_KEY } from '@/api/client'
 import { useAuthStore } from '@/store/auth.store'
-import type { TelegramAuthData } from '@/api/auth'
 
 export const Route = createFileRoute('/login')({
   beforeLoad: async () => {
@@ -18,6 +24,7 @@ export const Route = createFileRoute('/login')({
 })
 
 function LoginPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { setUser } = useAuthStore()
   const telegramRef = useRef<HTMLDivElement>(null)
@@ -40,7 +47,7 @@ function LoginPage() {
       const { accessToken } = await authApi.telegramCallback(data)
       await handleSuccess(accessToken)
     } catch {
-      setError('Telegram auth failed')
+      setError(t('login.telegramFailed'))
     }
   }
 
@@ -53,11 +60,15 @@ function LoginPage() {
         const { accessToken } = await authApi.login(email, password)
         await handleSuccess(accessToken)
       } else {
-        const { accessToken } = await authApi.register(username, email, password)
+        const { accessToken } = await authApi.register(
+          username,
+          email,
+          password,
+        )
         await handleSuccess(accessToken)
       }
     } catch (err: any) {
-      setError(err?.response?.data?.message ?? 'Something went wrong')
+      setError(err?.response?.data?.message ?? t('login.somethingWentWrong'))
     } finally {
       setLoading(false)
     }
@@ -66,7 +77,6 @@ function LoginPage() {
   useEffect(() => {
     const botName = (import.meta as any).env?.VITE_TELEGRAM_BOT_NAME
     if (!botName || !telegramRef.current) return
-
     ;(window as any).onTelegramAuth = handleTelegramAuth
 
     const script = document.createElement('script')
@@ -89,9 +99,11 @@ function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center space-y-2">
-          <h1 className="text-2xl font-bold">Inventory</h1>
+          <h1 className="text-2xl font-bold">{t('nav.brand')}</h1>
           <p className="text-muted-foreground text-sm">
-            {mode === 'login' ? 'Sign in to manage your inventories' : 'Create your account'}
+            {mode === 'login'
+              ? t('login.signInTitle')
+              : t('login.registerTitle')}
           </p>
         </div>
 
@@ -102,14 +114,16 @@ function LoginPage() {
             className="flex items-center justify-center gap-3 w-full h-10 px-4 border border-border rounded-lg text-sm font-medium hover:bg-accent transition-colors"
           >
             <GoogleIcon />
-            Continue with Google
+            {t('login.continueWithGoogle')}
           </a>
 
           <div ref={telegramRef} className="flex justify-center" />
 
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-border" />
-            <span className="text-xs text-muted-foreground">or</span>
+            <span className="text-xs text-muted-foreground">
+              {t('login.or')}
+            </span>
             <div className="flex-1 h-px bg-border" />
           </div>
 
@@ -118,7 +132,7 @@ function LoginPage() {
             {mode === 'register' && (
               <input
                 type="text"
-                placeholder="Username"
+                placeholder={t('login.username')}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -127,7 +141,7 @@ function LoginPage() {
             )}
             <input
               type="email"
-              placeholder="Email"
+              placeholder={t('login.email')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -135,7 +149,7 @@ function LoginPage() {
             />
             <input
               type="password"
-              placeholder="Password"
+              placeholder={t('login.password')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -149,17 +163,26 @@ function LoginPage() {
               disabled={loading}
               className="w-full h-10 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
             >
-              {loading ? '...' : mode === 'login' ? 'Sign in' : 'Create account'}
+              {loading
+                ? '...'
+                : mode === 'login'
+                  ? t('login.signIn')
+                  : t('login.createAccount')}
             </button>
           </form>
 
           <p className="text-center text-sm text-muted-foreground">
-            {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+            {mode === 'login'
+              ? t('login.noAccount') + ' '
+              : t('login.alreadyAccount') + ' '}
             <button
-              onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError('') }}
+              onClick={() => {
+                setMode(mode === 'login' ? 'register' : 'login')
+                setError('')
+              }}
               className="text-primary hover:underline"
             >
-              {mode === 'login' ? 'Sign up' : 'Sign in'}
+              {mode === 'login' ? t('login.signUp') : t('login.signIn')}
             </button>
           </p>
         </div>

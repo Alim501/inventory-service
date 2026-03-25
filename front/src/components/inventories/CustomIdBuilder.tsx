@@ -1,16 +1,22 @@
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { Plus, Trash2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import type { CustomIdElementType } from '@/lib/types/inventory.types'
+import type { InventoryFormValues } from './InventoryForm'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { CUSTOM_ID_ELEMENT_LABELS } from '@/lib/constants'
-import type { CustomIdElementType } from '@/lib/types/inventory.types'
-import type { InventoryFormValues } from './InventoryForm'
 
-const ELEMENT_TYPES = Object.keys(CUSTOM_ID_ELEMENT_LABELS) as CustomIdElementType[]
+const ELEMENT_TYPES = Object.keys(
+  CUSTOM_ID_ELEMENT_LABELS,
+) as Array<CustomIdElementType>
 
-// Preview: generates sample custom ID from current elements
 function previewCustomId(
-  elements: { type: CustomIdElementType; value?: string; format?: string }[],
+  elements: Array<{
+    type: CustomIdElementType
+    value?: string
+    format?: string
+  }>,
 ): string {
   return elements
     .map((el) => {
@@ -31,7 +37,10 @@ function previewCustomId(
           return 'xxxxxxxx'
         case 'datetime':
           return el.format
-            ? new Date().toISOString().slice(0, 10).replace(/-/g, el.format.includes('MM') ? '' : '-')
+            ? new Date()
+                .toISOString()
+                .slice(0, 10)
+                .replace(/-/g, el.format.includes('MM') ? '' : '-')
             : '2025'
         default:
           return '?'
@@ -41,12 +50,16 @@ function previewCustomId(
 }
 
 export function CustomIdBuilder() {
+  const { t } = useTranslation()
   const { register, watch } = useFormContext<InventoryFormValues>()
-  const { fields, append, remove, move } = useFieldArray<InventoryFormValues, 'customIdFormat.elements'>({
+  const { fields, append, remove, move } = useFieldArray<
+    InventoryFormValues,
+    'customIdFormat.elements'
+  >({
     name: 'customIdFormat.elements',
   })
 
-  const watchedElements = watch('customIdFormat.elements') ?? []
+  const watchedElements = watch('customIdFormat.elements')
   const preview = previewCustomId(
     watchedElements.map((el, i) => ({ ...el, ...watchedElements[i] })),
   )
@@ -58,11 +71,11 @@ export function CustomIdBuilder() {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium">Custom ID Format</h3>
+        <h3 className="text-sm font-medium">{t('customId.title')}</h3>
         <span className="text-xs text-muted-foreground">
-          Preview:{' '}
+          {t('customId.preview')}{' '}
           <code className="px-1.5 py-0.5 bg-muted rounded text-foreground">
-            {preview || 'empty'}
+            {preview || t('customId.empty')}
           </code>
         </span>
       </div>
@@ -85,7 +98,7 @@ export function CustomIdBuilder() {
 
       {fields.length === 0 && (
         <p className="text-xs text-muted-foreground text-center py-4 border border-dashed border-border rounded-lg">
-          No elements. IDs will be UUID by default.
+          {t('customId.noElements')}
         </p>
       )}
 
@@ -103,21 +116,21 @@ export function CustomIdBuilder() {
 
               {type === 'fixed' && (
                 <Input
-                  placeholder="Text (e.g. BOOK- or 🎯)"
+                  placeholder={t('customId.addText')}
                   className="h-7 text-xs"
                   {...register(`customIdFormat.elements.${index}.value`)}
                 />
               )}
               {type === 'sequence' && (
                 <Input
-                  placeholder="Format: D3 (001), D4 (0001)"
+                  placeholder={t('customId.addSequence')}
                   className="h-7 text-xs"
                   {...register(`customIdFormat.elements.${index}.format`)}
                 />
               )}
               {type === 'datetime' && (
                 <Input
-                  placeholder="Format: yyyy, MM, dd, HH, mm"
+                  placeholder={t('customId.addDatetime')}
                   className="h-7 text-xs"
                   {...register(`customIdFormat.elements.${index}.format`)}
                 />

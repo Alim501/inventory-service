@@ -15,6 +15,8 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { TelegramAuthDto } from './dto/telegram-auth.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 import { AuthGuard as PassportAuthGuard } from '@nestjs/passport';
 import { AuthGuard } from './guards/auth.guard';
 import { CurrentUser } from './decorators/user.decorator';
@@ -120,6 +122,18 @@ export class AuthController {
   }
 
   // ── Telegram OAuth ────────────────────────────────────────────────────────
+
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.OK)
+  forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(dto);
+  }
+
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto);
+  }
 
   @Post('telegram/callback')
   @HttpCode(HttpStatus.OK)

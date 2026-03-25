@@ -7,26 +7,27 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { TagsService } from './tags.service';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
-import { AuthGuard } from '@/auth/guards/auth.guard';
-import { AdminGuard } from '@/auth/guards/admin.guard';
+import { AuthGuard } from '@/shared/guards/auth.guard';
+import { AdminGuard } from '@/shared/guards/admin.guard';
 
 @Controller('tags')
 export class TagsController {
   constructor(private readonly tagsService: TagsService) {}
 
-  @UseGuards(AuthGuard, AdminGuard)
+  @UseGuards(AuthGuard)
   @Post()
   create(@Body() createTagDto: CreateTagDto) {
-    return this.tagsService.create(createTagDto);
+    return this.tagsService.findOrCreate(createTagDto.name);
   }
 
   @Get()
-  findAll() {
-    return this.tagsService.findAll();
+  findAll(@Query('search') search?: string) {
+    return this.tagsService.findAll(search);
   }
 
   @Get(':id')

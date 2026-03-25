@@ -7,7 +7,7 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@/auth/guards/auth.guard';
+import { AuthGuard } from '@/shared/guards/auth.guard';
 import { CurrentUser } from '@/auth/decorators/user.decorator';
 import type { User } from '@/generated/prisma/client';
 import { CreateInventoryFieldDto } from '../dto/create-inventory-fields.dto';

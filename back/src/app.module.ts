@@ -10,6 +10,8 @@ import { ItemsModule } from './items/items.module';
 import { CommentsModule } from './comments/comments.module';
 import { LikesModule } from './likes/likes.module';
 import { TagsModule } from './tags/tags.module';
+import { SupportModule } from './support/support.module';
+import { ApiModule } from './api/api.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { TagsModule } from './tags/tags.module';
     CommentsModule,
     LikesModule,
     TagsModule,
+    SupportModule,
+    ApiModule,
   ],
   controllers: [AppController],
   providers: [AppService],

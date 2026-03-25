@@ -1,0 +1,190 @@
+export const en = {
+  nav: {
+    brand: 'Inventory',
+    myInventories: 'My Inventories',
+    admin: 'Admin',
+    signIn: 'Sign in',
+  },
+
+  common: {
+    save: 'Save Changes',
+    saved: 'Saved!',
+    cancel: 'Cancel',
+    delete: 'Delete',
+    edit: 'Edit',
+    loading: 'Loading…',
+    accessDenied: 'Access denied.',
+  },
+
+  login: {
+    signInTitle: 'Sign in to manage your inventories',
+    registerTitle: 'Create your account',
+    continueWithGoogle: 'Continue with Google',
+    or: 'or',
+    username: 'Username',
+    email: 'Email',
+    password: 'Password',
+    signIn: 'Sign in',
+    createAccount: 'Create account',
+    noAccount: "Don't have an account?",
+    alreadyAccount: 'Already have an account?',
+    signUp: 'Sign up',
+    telegramFailed: 'Telegram auth failed',
+    somethingWentWrong: 'Something went wrong',
+  },
+
+  profile: {
+    pleaseSignIn: 'Please sign in.',
+    username: 'Username',
+    email: 'Email',
+  },
+
+  home: {
+    title: 'Public Inventories',
+    subtitle: 'Browse and contribute to public collections',
+    noInventories: 'No public inventories yet',
+    newInventory: 'New Inventory',
+  },
+
+  inventories: {
+    title: 'My Inventories',
+    subtitle: 'Manage your collections',
+    newInventory: 'New Inventory',
+    empty: 'You have no inventories yet',
+    emptyAction: 'Create your first inventory',
+  },
+
+  inventory: {
+    notFound: 'Inventory not found or access denied',
+    share: 'Share',
+    sharedAccess: 'Shared access',
+    fields: 'Fields',
+    items: 'Items',
+    editTitle: 'Edit Inventory',
+    apiTokenGenerate: 'Generate API token',
+    apiTokenCopy: 'Copy token',
+    apiTokenCopied: 'Copied!',
+    apiTokenRegenerate: 'Regenerate token',
+  },
+
+  inventoryForm: {
+    newTitle: 'New Inventory',
+    newSubtitle: 'Define your collection template',
+    titleLabel: 'Title *',
+    titlePlaceholder: 'My Collection',
+    description: 'Description',
+    descriptionPlaceholder: 'What is this inventory about?',
+    category: 'Category',
+    categoryNone: '— None —',
+    isPublic: 'Public inventory',
+    tags: 'Tags',
+    create: 'Create Inventory',
+    save: 'Save Changes',
+  },
+
+  fieldsEditor: {
+    title: 'Custom Fields',
+    empty: 'No fields yet. Add fields using the buttons above.',
+    fieldName: 'Field name',
+    description: 'Description (optional)',
+    showInTable: 'Show in table',
+  },
+
+  customId: {
+    title: 'Custom ID Format',
+    preview: 'Preview:',
+    empty: 'empty',
+    noElements: 'No elements. IDs will be UUID by default.',
+    addText: 'Text (e.g. BOOK- or 🎯)',
+    addSequence: 'Format: D3 (001), D4 (0001)',
+    addDatetime: 'Format: yyyy, MM, dd, HH, mm',
+  },
+
+  items: {
+    id: 'ID',
+    addedBy: 'Added by',
+    noItems: 'No items yet',
+    addItem: 'Add Item',
+    deleteSelected: 'Delete {{count}} selected',
+    customId: 'Custom ID',
+    customIdPlaceholder: '(leave empty to auto-generate)',
+    customIdExample: 'e.g. BOOK-001',
+    noFields: 'This inventory has no custom fields.',
+    noFieldValues: 'No field values.',
+    urlPlaceholder: 'https://...',
+    yes: 'Yes',
+    editTitle: 'Edit Item',
+  },
+
+  comments: {
+    title: 'Comments',
+    firstComment: 'Be the first to comment!',
+    noComments: 'No comments yet.',
+    placeholder: 'Write a comment... (Markdown supported)',
+    post: 'Post Comment',
+    deleteConfirm: 'Delete this comment?',
+    save: 'Save',
+    cancel: 'Cancel',
+  },
+
+  access: {
+    placeholder: 'Username',
+    userNotFound: 'User not found',
+    grantFailed: 'Failed to grant access',
+    searchFailed: 'Failed to search users',
+    noShared: 'No shared users yet.',
+  },
+
+  tags: {
+    placeholder: 'Add tags...',
+    create: 'Create "{{query}}"',
+  },
+
+  admin: {
+    title: 'Admin Dashboard',
+    totalUsers: 'Total Users',
+    admins: 'Admins',
+    blocked: 'Blocked',
+    inventories: 'Inventories',
+    manageUsers: 'Manage Users',
+    usersTitle: 'Users',
+    colUsername: 'Username',
+    colEmail: 'Email',
+    colRole: 'Admin',
+    colRoleUser: 'User',
+    colStatus: 'Status',
+    colStatusActive: 'Active',
+    colStatusBlocked: 'Blocked',
+    colJoined: 'Joined',
+    colActions: 'Actions',
+    deleteConfirm: 'Delete user "{{username}}"?',
+    removeAdmin: 'Remove admin',
+    makeAdmin: 'Make admin',
+    block: 'Block',
+    unblock: 'Unblock',
+    deleteUser: 'Delete user',
+  },
+
+  support: {
+    title: 'Report an issue',
+    summary: 'Summary',
+    summaryPlaceholder: 'Describe the problem…',
+    priority: 'Priority',
+    priority_High: 'High',
+    priority_Average: 'Medium',
+    priority_Low: 'Low',
+    pageLink: 'Page',
+    inventoryTitle: 'Inventory (optional)',
+    inventoryTitlePlaceholder: 'Which inventory is this about?',
+    submit: 'Send report',
+    submitted: 'Thanks, your report has been sent.',
+  },
+
+  notFound: {
+    title: 'Page not found',
+    subtitle: "The page you're looking for doesn't exist or was moved.",
+    goHome: 'Go home',
+  },
+}
+
+export type Translation = typeof en

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { likesApi } from '@/api/likes'
 import { itemKeys } from './useItems'
+import { likesApi } from '@/api/likes'
 
 export function useToggleLike(inventoryId: string, itemId: string) {
   const qc = useQueryClient()

@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { Package, Lock, Globe, Tag } from 'lucide-react'
+import { Globe, Lock, Package, Tag } from 'lucide-react'
 import type { Inventory } from '@/lib/types'
 
 interface InventoryCardProps {
@@ -43,9 +43,7 @@ export function InventoryCard({ inventory }: InventoryCardProps) {
           )}
 
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            {inventory._count && (
-              <span>{inventory._count.items} items</span>
-            )}
+            {inventory._count && <span>{inventory._count.items} items</span>}
             {inventory.category && (
               <span className="px-2 py-0.5 rounded-full bg-muted">
                 {inventory.category}

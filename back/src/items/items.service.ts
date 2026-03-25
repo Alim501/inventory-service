@@ -162,7 +162,6 @@ export class ItemsService {
 
   async bulkRemove(inventoryId: string, ids: string[], user: User) {
     if (!user.isAdmin) {
-      // ensure all items belong to this user
       const items = await this.prisma.item.findMany({
         where: { id: { in: ids }, inventoryId },
         select: { creatorId: true },
