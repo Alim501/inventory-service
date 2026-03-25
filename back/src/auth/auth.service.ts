@@ -114,9 +114,19 @@ export class AuthService {
     const googleId = profile.id;
     let user = await this.userService.findByGoogleId(googleId);
     if (!user) {
+      const baseUsername =
+        profile.displayName ??
+        profile.emails?.[0]?.value?.split('@')[0] ??
+        googleId;
+      let username = baseUsername;
+      let attempt = 0;
+      while (await this.userService.findByUsername(username)) {
+        attempt++;
+        username = `${baseUsername}${attempt}`;
+      }
       user = await this.userService.create({
         googleId,
-        username: profile.displayName ?? profile.emails?.[0]?.value ?? googleId,
+        username,
         email: profile.emails?.[0]?.value,
       });
     }
@@ -156,9 +166,16 @@ export class AuthService {
     const telegramId = String(data.id);
     let user = await this.userService.findByTelegramId(telegramId);
     if (!user) {
+      const baseUsername = data.username ?? data.first_name;
+      let username = baseUsername;
+      let attempt = 0;
+      while (await this.userService.findByUsername(username)) {
+        attempt++;
+        username = `${baseUsername}${attempt}`;
+      }
       user = await this.userService.create({
         telegramId,
-        username: data.username ?? data.first_name,
+        username,
       });
     }
     return this.generateTokens(
