@@ -18,7 +18,7 @@ class InventoryImport(models.Model):
         if not self.api_token:
             raise UserError('API Token is required')
 
-        url = 'http://host.docker.internal:3001/api/v1/inventory'  # /api prefix is global in NestJS
+        url = 'https://back-production-9a1f.up.railway.app/api/v1/inventory'
 
         try:
             response = requests.get(url, headers={'x-api-token': self.api_token})
